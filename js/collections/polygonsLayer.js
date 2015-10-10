@@ -1,0 +1,1 @@
+var polygonsLayer = Backbone.Collection.extend({});

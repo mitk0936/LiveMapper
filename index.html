@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+	<title>Mapper App</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+	<link rel="stylesheet" type="text/css" href="styles/style.css">
+</head>
+<body>
+	<div id="map"></div>
+	<!-- Libraries -->
+	<script type="text/javascript" src="js/lib/jquery.js"></script>
+	<script type="text/javascript" src="js/lib/underscore.js"></script>
+	<script type="text/javascript" src="js/lib/backbone.js"></script>
+	<!-- Custom Plugins -->
+	<script type="text/javascript" src="js/customPlugins/mapTyler.js"></script>
+	<script type="text/javascript" src="js/customPlugins/bleGps.js"></script>
+	<script type="text/javascript" src="js/customPlugins/mapTyler.js"></script>
+	<!-- Backbone collections -->
+	<script type="text/javascript" src="js/collections/path.js"></script>
+	<script type="text/javascript" src="js/collections/polygonsLayer.js"></script>
+	<script type="text/javascript" src="js/collections/polylinesLayer.js"></script>
+	<script type="text/javascript" src="js/collections/pointsLayer.js"></script>
+	<!-- Backbone models -->
+	<script type="text/javascript" src="js/models/poly.js"></script>
+	<script type="text/javascript" src="js/models/polygon.js"></script>
+	<script type="text/javascript" src="js/models/point.js"></script>
+	<script type="text/javascript" src="js/models/map.js"></script>
+	<!-- Backbone views -->
+	<script type="text/javascript" src="js/views/statesView.js"></script>
+	<script type="text/javascript" src="js/views/mapView.js"></script>
+	<script type="text/javascript" src="js/views/pointView.js"></script>
+	<script type="text/javascript" src="js/views/polyView.js"></script>
+	<script type="text/javascript" src="js/views/polygonView.js"></script>
+	<!-- Main object -->
+	<script type="text/javascript" src="js/mapper.js"></script>
+
+	<script type="text/javascript" src="js/customPointStyles.js"></script>
+	<script type="text/javascript" src="js/functions.js"></script>
+
+	<script type="text/javascript">
+		"use strict";
+		var map; // holding the google map object
+		$(document).ready(function(){
+			mapper.init();
+		});
+	</script>
+	<div id="states">
+		<ul>
+			<li class="current">
+				<a href="javascript:void(0)" data-val="point">Point</a>
+			</li>
+			<li>
+				<a href="javascript:void(0)" data-val="polyline">Polyline</a>
+			</li>
+			<li>
+				<a href="javascript:void(0)" data-val="polygon">Polygon</a>
+			</li>
+		</ul>
+	</div>
+</body>
+</html>

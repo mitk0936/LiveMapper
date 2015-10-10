@@ -1,0 +1,46 @@
+*{
+	margin:0;
+	padding: 0;
+	font-family:Arial, sans-serif;
+}
+#map{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+#states{
+	position: absolute;
+	height: 50px;
+	left: 35%;
+	right: 35%;
+	bottom: 10px;
+	background-color: #fff;
+	z-index: 999999999999999999999;
+	border: 1px solid #ccc;
+}
+a{
+	color: #333;
+	text-decoration: none;
+	display: block;
+}
+.current a, a:hover{
+	color: #999;
+}
+#states ul{
+	display: block;
+	list-style-type: none;
+	width: 100%;
+}
+#states ul li{
+	display: block;
+	float: left;
+	width: 33.3333333333333333333333333333%;
+	line-height: 50px;
+	text-align: center;
+}
+#states ul li.current, #states ul li:hover{
+	color:#fff;
+	background-color: #333;
+}
