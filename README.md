@@ -1,0 +1,2 @@
+# LiveMapper
+Application for cartography
