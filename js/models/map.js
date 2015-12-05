@@ -17,7 +17,7 @@ var Map = Backbone.Model.extend({
 
 		new statesView({
 			model: self
-		})
+		});
 	},
 	addPoint: function(p){
 		if(this.get("currentSelection") && this.get("currentSelection").addPoint){
@@ -61,9 +61,7 @@ var Map = Backbone.Model.extend({
 		current.set("isSelected", true);
 	},
 	deselectCurrent: function(){
-		if(this.get("currentSelection")){
-			this.get("currentSelection").set("isSelected", false);
-		}
+		this.get("currentSelection") && this.get("currentSelection").set("isSelected", false);
 	},
 	clearSelection: function(){
 		this.deselectCurrent();

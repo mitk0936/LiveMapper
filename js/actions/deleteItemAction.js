@@ -1,0 +1,3 @@
+var deleteItemAction = action.extend({
+
+});

@@ -34,9 +34,9 @@ var poly = Backbone.Model.extend({
 
 			if(this.get("pointsCollection").length > 1){
 				// there is an end point
-				var last = this.get("pointsCollection").where({"isEndPoint": true});
+				var markedAsLastPoint = this.get("pointsCollection").where({"isEndPoint": true});
 
-				$.each(last, function(){
+				$.each(markedAsLastPoint, function(){
 					this.set("isEndPoint", false); // previous last point, is no more a last point
 				});
 				
