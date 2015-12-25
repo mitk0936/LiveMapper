@@ -1,6 +1,5 @@
 var pointView = Backbone.View.extend({
 	initialize: function(){
-		this.startLatLng = this.model.get("latLng");
 		this.render();
 		this.initHandlers();
 	},
@@ -12,8 +11,10 @@ var pointView = Backbone.View.extend({
 			this.destroyGoogleMarker();
 		}
 
+		this.model.set("latLng", new google.maps.LatLng(self.model.get("lat"), self.model.get("lng")));
+		
 		this.googleMarker = new google.maps.Marker({
-	        position: new google.maps.LatLng(self.model.get("lat"), self.model.get("lng")),
+	        position: self.model.get("latLng"),
 	        map : map,
             optimized : true,
 	        draggable: self.model.get("draggable"),
@@ -47,27 +48,20 @@ var pointView = Backbone.View.extend({
 		var self = this;
 
 		google.maps.event.addListener(this.googleMarker, 'dragend', function(event){
-	    	var saveChanges = true, //confirm("Changes?"),
-	    		pos = self.startLatLng;
-
-	    	saveChanges && (pos = event.latLng);
-
-	    	self.model.setPosition(pos, true);
+    		self.model.set("latLng", event.latLng);
 
 	    	self.triggerEventParent("pointDragStop", {
 	    		model: self.model,
-	    		changed: saveChanges
+	    		changed: true
 	    	});
 	    });
 
 	    google.maps.event.addListener(this.googleMarker, 'dragstart', function(event){
-	    	self.startLatLng = event.latLng;
-	    	self.model.setPosition(event.latLng, false);
-	    	// self.triggerEventParent("pointDragStart", self.model);
+	    	
 	    });
 
 	    google.maps.event.addListener(this.googleMarker, 'drag', function(event){
-	    	self.model.setPosition(event.latLng, false);
+	    	self.model.set("latLng", event.latLng);
 	    });
 	},
 	initHandlers: function(){
@@ -84,26 +78,28 @@ var pointView = Backbone.View.extend({
 		});
 
 		// init events for points in polylines and polygons
-			this.listenTo(this.model, "change:isStartPoint", function(){
-				if(this.model.get("isStartPoint")){
-					self.setStartPointStyle();
-				}else{
-					self.setDefaultPointStyle();
-				}
-			});
+		this.listenTo(this.model, "change:isStartPoint", function(){
+			if(this.model.get("isStartPoint")){
+				self.setStartPointStyle();
+			}else{
+				self.setDefaultPointStyle();
+			}
+		});
 
-			this.listenTo(this.model, "change:isEndPoint", function(){
-				if(this.model.get("isEndPoint")){
-					self.setEndPointStyle();
-				}else{
-					self.setDefaultPointStyle();
-				}
-			});
+		this.listenTo(this.model, "change:isEndPoint", function(){
+			if(this.model.get("isEndPoint")){
+				self.setEndPointStyle();
+			}else{
+				self.setDefaultPointStyle();
+			}
+		});
 
-			this.model.on("change:visible", function(){
-				self.googleMarker.setVisible(self.model.get("visible"));
-			});
+		this.model.on("change:visible", function(){
+			self.googleMarker.setVisible(self.model.get("visible"));
+		});
 
+
+		// Listen for model states changes
 		this.model.on("destroy", function(){
 			self.destroy();
 		});

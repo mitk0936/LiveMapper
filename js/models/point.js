@@ -4,6 +4,7 @@ var point = Backbone.Model.extend({
 		lat: 42.5555555,
 		lng: 23.34343434,
 		single: false,
+		isNew: true,
 
 		latLng: null, // google maps object
 		
@@ -19,25 +20,19 @@ var point = Backbone.Model.extend({
 	},
 	initialize: function(){
 		var self = this;
-		
-		this.setPosition(this.get("latLng"));
+
+		this.on("change:latLng", function(){
+			self.updatePositionData();
+		});
 
 		new pointView({model: this});
-
-		if(this.get("single")){
-			this.set("isSelected", true);
-		}
 	},
-	setPosition: function(latLng, refresh){
-		if(!latLng){
-			throw "Wrong latLng object";
-			return;
-		}
+	updatePositionData: function(refresh){
+		var latLng = this.get("latLng");
 
 		this.set({
 			"lat" : latLng.lat(),
 			"lng" : latLng.lng(),
-			"latLng" : latLng
 		});
 
 		refresh && this.trigger("refresh");

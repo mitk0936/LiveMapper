@@ -7,7 +7,7 @@ var Map = Backbone.Model.extend({
 	initialize: function(){
 		var self = this;
 
-		this.set("pointsLayer", new pointsSet());
+		this.set("pointsLayer", new pointsLayer());
 		this.set("polylinesLayer", new polylinesLayer());
 		this.set("polygonsLayer", new polygonsLayer());
 
@@ -28,10 +28,7 @@ var Map = Backbone.Model.extend({
 	},
 	createSelection: function(p){
 		if(mapper.currentState === "point"){
-			p.set("single", true);
 			this.get("pointsLayer").add(p);
-
-			this.selectCurrent(p , true);
 		}else{
 			var newPoly,
 				currentLayer;
@@ -51,8 +48,6 @@ var Map = Backbone.Model.extend({
 
 			newPoly.addPoint(p);
 			currentLayer.add(newPoly);
-
-			this.selectCurrent(newPoly , true);
 		}
 	},
 	selectCurrent: function(current, isNew){
@@ -66,9 +61,6 @@ var Map = Backbone.Model.extend({
 	clearSelection: function(){
 		this.deselectCurrent();
 		this.set("currentSelection", null);
-	},
-	removeSelection: function(selection){
-
 	},
 	toJSON: function(){
 		var result = _.clone(this.attributes);

@@ -10,7 +10,7 @@ var poly = Backbone.Model.extend({
 	},
 	initialize: function(){
 		var self = this;
-		this.set("pointsCollection", new pointsSet());
+		this.get("pointsCollection") || this.set("pointsCollection", new Backbone.Collection());
 		this.createView();
 	},
 	createView: function(){

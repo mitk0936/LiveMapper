@@ -4,10 +4,8 @@ var polyView = Backbone.View.extend({
 	},
 	render: function(){
 		var self = this;
-
-		if(this.googleMapsObject){
-			this.googleMapsObject.setMap(null);
-		}
+		
+		this.googleMapsObject && this.googleMapsObject.setMap(null);
 
 		this.googleMapsObject = new google.maps.Polyline({
 			path: self.model.get('pointsCollection').pluck("latLng"),
@@ -38,13 +36,9 @@ var polyView = Backbone.View.extend({
 		});
 
 		this.model.on("change:isSelected", function(e){
-	    	if(self.model.get("isSelected")){
-	    		self.setStyleSelected();
-	    		self.togglePoints(true);
-	    	}else{
-	    		self.setStyleDeselected();
-	    		self.togglePoints(false);
-	    	}
+			var isSelected = self.model.get("isSelected");
+			isSelected ? self.setStyleSelected() : self.setStyleDeselected();
+	    	self.togglePoints(isSelected);
 		});
 
 		this.model.on("destroy", function(){
@@ -84,7 +78,8 @@ var polyView = Backbone.View.extend({
 			var pos = calcMiddlePoint(prev.get("latLng").lat(), prev.get("latLng").lng(), pointModel.get("latLng").lat(), pointModel.get("latLng").lng());
 			
 			this.model.addPoint(new point({
-				latLng: new google.maps.LatLng(pos["lat"], pos["lon"])
+				lat: pos["lat"],
+				lng: pos["lng"]
 			}), index);
 
 			index++;
@@ -96,7 +91,8 @@ var polyView = Backbone.View.extend({
 			var pos = calcMiddlePoint(pointModel.get("latLng").lat(), pointModel.get("latLng").lng(), next.get("latLng").lat(), next.get("latLng").lng());
 			
 			this.model.addPoint(new point({
-				latLng: new google.maps.LatLng(pos["lat"], pos["lon"])
+				lat: pos["lat"],
+				lng: pos["lng"]
 			}),  index + 1);
 		}		
 	},

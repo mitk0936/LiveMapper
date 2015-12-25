@@ -1,5 +1,1 @@
-var polylinesLayer = Backbone.Collection.extend({
-	initialize: function(){
-		
-	}
-});
+var polylinesLayer = polyLayer.extend({});

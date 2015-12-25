@@ -13,8 +13,8 @@
 #states{
 	position: absolute;
 	height: 50px;
-	left: 35%;
-	right: 35%;
+	left: 25%;
+	right: 25%;
 	bottom: 10px;
 	background-color: #fff;
 	z-index: 999999999999999999999;
@@ -43,4 +43,14 @@ a{
 #states ul li.current, #states ul li:hover{
 	color:#fff;
 	background-color: #333;
+}
+
+@media  only screen  and ( max-width: 400px ) {
+	#states{
+		left: 15%;
+		right: 15%;
+	}
+	#states ul li a{
+		font-size: 12px;
+	}
 }

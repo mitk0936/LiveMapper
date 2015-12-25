@@ -20,11 +20,10 @@ var mapView = Backbone.View.extend({
 		var self = this;
 		google.maps.event.addListener(map, 'click', function(event) {
 			map.panTo(event.latLng);
-	        self.model.addPoint(new point({latLng: event.latLng}));
-	    });
-
-	    this.model.get("pointsLayer").on("add", function(){
-	    	// console.log("point added");
+	        self.model.addPoint(new point({
+	        	lat: event.latLng.lat(),
+	        	lng: event.latLng.lng()
+	        }));
 	    });
 	}
 });
