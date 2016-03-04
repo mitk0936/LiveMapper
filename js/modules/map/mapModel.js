@@ -4,36 +4,36 @@ var Map = Backbone.Model.extend({
 		centerLng : 23.233456,
 		currentSelection: null,
 	},
-	initialize: function(){
+	initialize: function() {
 		var self = this;
-
-		this.set("pointsLayer", new pointsLayer());
-		this.set("polylinesLayer", new polylinesLayer());
-		this.set("polygonsLayer", new polygonsLayer());
 
 		new mapView({
 			model: self
 		});
 
-		new statesView({
-			model: self
-		});
+		this.on('mapCreated', function () {
+			this.set("pointsLayer", new pointsLayer());
+			this.set("polylinesLayer", new polylinesLayer());
+			this.set("polygonsLayer", new polygonsLayer());
+
+			mapper.initLayers(); // experimental
+		})
 	},
-	addPoint: function(p){
-		if(this.get("currentSelection") && this.get("currentSelection").addPoint){
+	addPoint: function(p) {
+		if (this.get("currentSelection") && this.get("currentSelection").addPoint) {
 			this.get("currentSelection").addPoint(p);
-		}else{
+		} else {
 			this.createSelection(p);
 		}
 	},
-	createSelection: function(p){
-		if(mapper.currentState === "point"){
+	createSelection: function(p) {
+		if (mapper.currentState === "point") {
 			this.get("pointsLayer").add(p);
-		}else{
+		} else {
 			var newPoly,
 				currentLayer;
 
-			switch(mapper.currentState){
+			switch(mapper.currentState) {
 				case "polyline":
 					newPoly = new poly();
 					currentLayer = this.get("polylinesLayer");
@@ -50,19 +50,29 @@ var Map = Backbone.Model.extend({
 			currentLayer.add(newPoly);
 		}
 	},
-	selectCurrent: function(current, isNew){
+	selectCurrent: function(current, isNew) {
+		var map = this;
 		this.deselectCurrent();
 		this.set("currentSelection", current);
 		current.set("isSelected", true);
+		current.on("destroy", function() {
+			map.clearSelection();
+		});
 	},
-	deselectCurrent: function(){
+	deselectCurrent: function() {
 		this.get("currentSelection") && this.get("currentSelection").set("isSelected", false);
 	},
-	clearSelection: function(){
+	deleteItem: function(item) {
+		if (confirm("Are you sure you want to delete this " + item.get("type"))) {
+    		item.get("isSelected") && this.deselectCurrent();
+			item.destroy();
+		}
+	},
+	clearSelection: function() {
 		this.deselectCurrent();
 		this.set("currentSelection", null);
 	},
-	toJSON: function(){
+	toJSON: function() {
 		var result = _.clone(this.attributes);
 		var self = this;
 

@@ -3,60 +3,72 @@
 <head>
 	<title>Mapper App</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+
+	<!-- Styles -->
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
 	<link rel="stylesheet" type="text/css" href="styles/style.css">
-</head>
-<body>
-	<div id="map"></div>
+
 	<!-- Libraries -->
+	<script src="https://maps.googleapis.com/maps/api/js?v=3.23&sensor=false"></script>
 	<script type="text/javascript" src="js/lib/jquery.js"></script>
 	<script type="text/javascript" src="js/lib/underscore.js"></script>
 	<script type="text/javascript" src="js/lib/backbone.js"></script>
+	<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
 	<!-- Custom Plugins -->
-	<script type="text/javascript" src="js/customPlugins/mapTyler.js"></script>
-	<script type="text/javascript" src="js/customPlugins/bleGps.js"></script>
-	<script type="text/javascript" src="js/customPlugins/mapTyler.js"></script>
-	<!-- Backbone collections -->
-	<script type="text/javascript" src="js/collections/polyLayer.js"></script>
-	<script type="text/javascript" src="js/collections/polygonsLayer.js"></script>
-	<script type="text/javascript" src="js/collections/polylinesLayer.js"></script>
-	<script type="text/javascript" src="js/collections/pointsLayer.js"></script>
-	<!-- Backbone models -->
-	<script type="text/javascript" src="js/models/poly.js"></script>
-	<script type="text/javascript" src="js/models/polygon.js"></script>
-	<script type="text/javascript" src="js/models/point.js"></script>
-	<script type="text/javascript" src="js/models/map.js"></script>
-	<!-- Backbone views -->
-	<script type="text/javascript" src="js/views/statesView.js"></script>
-	<script type="text/javascript" src="js/views/mapView.js"></script>
-	<script type="text/javascript" src="js/views/pointView.js"></script>
-	<script type="text/javascript" src="js/views/polyView.js"></script>
-	<script type="text/javascript" src="js/views/polygonView.js"></script>
-	<!-- Main object -->
-	<script type="text/javascript" src="js/mapper.js"></script>
+	<script type="text/javascript" src="js/custom-libs/mapTyler.js"></script>
+	<script type="text/javascript" src="js/custom-libs/bleGps.js"></script>
 
-	<script type="text/javascript" src="js/customPointStyles.js"></script>
-	<script type="text/javascript" src="js/functions.js"></script>
+	<!-- Layers -->
+	<script type="text/javascript" src="js/modules/layers/pointsCollection.js"></script>
+	<script type="text/javascript" src="js/modules/layers/polyLayer.js"></script>
+	<script type="text/javascript" src="js/modules/layers/polygonsLayer.js"></script>
+	<script type="text/javascript" src="js/modules/layers/polylinesLayer.js"></script>
+	<script type="text/javascript" src="js/modules/layers/pointsLayer.js"></script>
+	
+	<!-- UI objects models -->
+	<script type="text/javascript" src="js/modules/panels/panelModel.js"></script>
+	<script type="text/javascript" src="js/modules/panels/stylePanelModel.js"></script>
 
-	<script type="text/javascript">
-		"use strict";
-		var map; // holding the google map object
-		$(document).ready(function(){
-			mapper.init();
-		});
-	</script>
-	<div id="states">
-		<ul>
-			<li class="current">
-				<a href="javascript:void(0)" data-val="point">Point</a>
-			</li>
-			<li>
-				<a href="javascript:void(0)" data-val="polyline">Polyline</a>
-			</li>
-			<li>
-				<a href="javascript:void(0)" data-val="polygon">Polygon</a>
-			</li>
-		</ul>
+	<!-- Map objects models -->
+	<script type="text/javascript" src="js/modules/map/mapModel.js"></script>
+	<script type="text/javascript" src="js/modules/point/pointModel.js"></script>
+	<script type="text/javascript" src="js/modules/poly/polyModel.js"></script>
+	<script type="text/javascript" src="js/modules/polygon/polygonModel.js"></script>
+
+	<!-- Map objects views -->
+	<script type="text/javascript" src="js/modules/map/mapView.js"></script>
+	<script type="text/javascript" src="js/modules/point/pointView.js"></script>
+	<script type="text/javascript" src="js/modules/poly/polyView.js"></script>
+	<script type="text/javascript" src="js/modules/polygon/polygonView.js"></script>
+	
+	<!-- UI views -->
+	<script type="text/javascript" src="js/ui-views/statesView.js"></script>
+	<script type="text/javascript" src="js/ui-views/actionsView.js"></script>
+	<script type="text/javascript" src="js/ui-views/editDeleteView.js"></script>
+	<!-- panels -->
+	<script type="text/javascript" src="js/ui-views/panels/panelView.js"></script>
+	<script type="text/javascript" src="js/ui-views/panels/stylePanelView.js"></script>
+
+	<!-- Helpers -->
+	<script type="text/javascript" src="js/helpers/customPointStyles.js"></script>
+	<script type="text/javascript" src="js/helpers/functions.js"></script>
+	<script type="text/javascript" src="js/testLayer.js"></script>
+
+	<!-- Main Controllers -->
+	<script type="text/javascript" src="js/modules/main/actionsController.js"></script>
+	<script type="text/javascript" src="js/modules/main/uiController.js"></script>
+	<script type="text/javascript" src="js/modules/main/mapper.js"></script>
+    
+	<script type="text/javascript" src="js/bootstrap.js"></script>
+
+	<!-- Cordova library -->
+    <script type="text/javascript" src="cordova.js"></script>
+</head>
+<body>
+	<div data-role="page" id="page-container" >
+		<div data-role="content" id="main-container"></div>
 	</div>
+	<!-- All templates are dinamically loaded -->
 </body>
 </html>

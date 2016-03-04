@@ -10,7 +10,8 @@ var poly = Backbone.Model.extend({
 	},
 	initialize: function(){
 		var self = this;
-		this.get("pointsCollection") || this.set("pointsCollection", new Backbone.Collection());
+		
+		this.set("pointsCollection", new pointsCollection());
 		this.createView();
 	},
 	createView: function(){
@@ -24,9 +25,12 @@ var poly = Backbone.Model.extend({
 				at: parseInt(index)
 			}
 		}
-
-		point.set("_parentCollection", this.get("pointsCollection"));
-		this.get("pointsCollection").add(point, at);
+		
+		// used to hide/show, the whole points layer at once
+		var pointsCollection = this.get('pointsCollection');
+		
+		point.set("_parentCollection", pointsCollection);
+		pointsCollection.add(point, at);
 	},
 	setStartEndPoints: function(){
 		if(this.get("pointsCollection").length){
@@ -61,5 +65,8 @@ var poly = Backbone.Model.extend({
 		});
 
 		return poly;
+	},
+	toJSON: function(){
+		
 	}
 });

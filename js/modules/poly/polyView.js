@@ -1,8 +1,11 @@
 var polyView = Backbone.View.extend({
-	initialize: function(){
+	initialize: function() {
 		this.initHandlers();
+
+		// used to hide/show, the whole points layer at once
+		this.pointsLayer = new google.maps.MVCObject();
 	},
-	render: function(){
+	render: function() {
 		var self = this;
 		
 		this.googleMapsObject && this.googleMapsObject.setMap(null);
@@ -11,68 +14,58 @@ var polyView = Backbone.View.extend({
 			path: self.model.get('pointsCollection').pluck("latLng"),
 			geodesic: true,
 			strokeColor: self.model.get("fillColor"),
-			strokeOpacity: 1.0,
-			strokeWeight: 5
+			strokeOpacity: 1,
+			strokeWeight: 3
 		});
 
-		this.googleMapsObject.setMap(map);
+		this.googleMapsObject.setMap(mapper.mapCanvas);
 		this.initMapHandlers();
 	},
-	initHandlers: function(){
+	initHandlers: function() {
 		var self = this;
 
-		this.model.get("pointsCollection").on("pointDragStop", function(ev){
-			if(ev.changed){
+		this.model.get("pointsCollection").on("pointDragStop", function(ev) {
+			if (ev.changed) {
 				self.insertHelperPoints(ev.model, this);
 			}
 		});
 
-		this.model.get("pointsCollection").on("add change:latLng remove", function(){
+		this.model.get("pointsCollection").on("add change:latLng remove", function(e) {
 			self.render();
 		});
 
-		this.model.get("pointsCollection").on("add remove", function(){
+		this.model.get("pointsCollection").on("add remove", function() {
 			self.model.setStartEndPoints();
 		});
 
-		this.model.on("change:isSelected", function(e){
-			var isSelected = self.model.get("isSelected");
-			isSelected ? self.setStyleSelected() : self.setStyleDeselected();
-	    	self.togglePoints(isSelected);
+		this.model.on("change:isSelected", function(e) {
+			e.changed.isSelected ? self.setStyleSelected() : self.setStyleDeselected();
+	    	self.togglePoints(e.changed.isSelected);
 		});
 
-		this.model.on("destroy", function(){
+		this.model.on("destroy", function() {
 			/* when the model is destroyed
 				destroy every contained object
 			*/
 			self.destroy();
 		});
 	},
-	initMapHandlers: function(){
+	initMapHandlers: function() {
 		var self = this;
-		// this.googleMapsObject.addListener('click', function() {
-			
-		// });
 
-		this.googleMapsObject.addListener('click', function(event) {
-			if(self.model.get("isSelected")){
-				if(confirm("Are you sure you want to delete this " + self.model.get("type") + "?")){
-					// will call destroying the view and every point of the poly
-					self.model.destroy();
-				}
-			}else{
+		this.googleMapsObject.addListener('mousedown', function(event) {
+			if (!self.model.get("isSelected")) {
 				mapper.getCurrentMap().selectCurrent(self.model);
 			}
-			
 		});
 	},
-	insertHelperPoints: function(pointModel, collection){
+	insertHelperPoints: function(pointModel, collection) {
 		var index = collection.indexOf(pointModel);
 
 		var isFirst = (index === 0),
 			isLast = (index === collection.length - 1);
 
-		if(!isFirst){
+		if (!isFirst) {
 			// insert before if the moved point wasnt the first one
 			var prev = collection.at(index - 1);
 			var pos = calcMiddlePoint(prev.get("latLng").lat(), prev.get("latLng").lng(), pointModel.get("latLng").lat(), pointModel.get("latLng").lng());
@@ -85,7 +78,7 @@ var polyView = Backbone.View.extend({
 			index++;
 		}
 
-		if(!isLast){
+		if (!isLast) {
 			// insert after if the moved point wasnt the last one
 			var next = collection.at(index + 1);
 			var pos = calcMiddlePoint(pointModel.get("latLng").lat(), pointModel.get("latLng").lng(), next.get("latLng").lat(), next.get("latLng").lng());
@@ -96,25 +89,28 @@ var polyView = Backbone.View.extend({
 			}),  index + 1);
 		}		
 	},
-	setStyleSelected: function(){
+	setStyleSelected: function() {
 		this.model.set("fillColor", this.model.defaults.selectedFillColor);
 		this.googleMapsObject.setOptions({strokeColor: this.model.defaults.selectedFillColor});
 	},
-	setStyleDeselected: function(){
+	setStyleDeselected: function() {
 		this.model.set("fillColor", this.model.defaults.fillColor);
 		this.googleMapsObject.setOptions({strokeColor: this.model.defaults.fillColor});
 	},
-	togglePoints: function(state){
-		// change the visibility of the contained points
-		_.each(this.model.get("pointsCollection").models, function(item){
-			item.set("visible", state);
-		});
+	togglePoints: function(stateVisible) {
+		if (stateVisible) {
+			this.model.get('pointsCollection').showAll();
+		} else {
+			this.model.get('pointsCollection').hideAll();
+		}
 	},
-	destroy: function(){
+	destroy: function() {
+		this.model.get("pointsCollection").off("add change:latLng remove");
+		
 		// destroy everything in this polygon/polyline
 		_.invoke(this.model.get("pointsCollection").toArray(), 'destroy');
 
-		$.each(this.model.get("pointsCollection"), function(){
+		$.each(this.model.get("pointsCollection"), function() {
 			this.model.get("pointsCollection").remove(this, {silent: true});
 		});
 
@@ -123,7 +119,7 @@ var polyView = Backbone.View.extend({
 	    this.remove(); 
 	    Backbone.View.prototype.remove.call(this);
 	},
-	destroyGoogleObject: function(){
+	destroyGoogleObject: function() {
 		this.googleMapsObject.setMap(null);
 	}
 });

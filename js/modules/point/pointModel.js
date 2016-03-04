@@ -18,16 +18,16 @@ var point = Backbone.Model.extend({
 
 	    _parentCollection: null,
 	},
-	initialize: function(){
+	initialize: function() {
 		var self = this;
 
-		this.on("change:latLng", function(){
+		this.on("change:latLng", function() {
 			self.updatePositionData();
 		});
 
 		new pointView({model: this});
 	},
-	updatePositionData: function(refresh){
+	updatePositionData: function(refresh) {
 		var latLng = this.get("latLng");
 
 		this.set({
@@ -37,10 +37,19 @@ var point = Backbone.Model.extend({
 
 		refresh && this.trigger("refresh");
 	},
-	toJSON: function(){
+	remove: function() {
+		var retrieveData = this.toJSON();
+
+		if(this._parentCollection) {
+			retrieveData._parentCollection = this._parentCollection;
+		}
+
+		return retrieveData;
+	},
+	toJSON: function() {
 		var result = _.clone(this.attributes);
 
-		return{
+		return {
 			type: result.type,
 			lat: result.lat,
 			lng: result.lng

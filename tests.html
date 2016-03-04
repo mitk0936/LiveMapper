@@ -1,0 +1,91 @@
+<html>
+    <head>
+        <title>Backbone.js Tests</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <link rel="stylesheet" href="tests/lib/mocha.css" />
+
+        <!-- JavaScript Test Libraries. -->
+        <script src="tests/lib/mocha.js"></script>
+        <script src="tests/lib/chai.js"></script>
+        <script src="tests/lib/sinon-chai.js"></script>
+        <script src="tests/lib/sinon.js"></script>
+
+        <!-- Libraries -->
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.23&sensor=false"></script>
+        <script type="text/javascript" src="js/lib/jquery.js"></script>
+        <script type="text/javascript" src="js/lib/underscore.js"></script>
+        <script type="text/javascript" src="js/lib/backbone.js"></script>
+        <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+        <!-- Custom Plugins -->
+        <script type="text/javascript" src="js/custom-libs/mapTyler.js"></script>
+        <script type="text/javascript" src="js/custom-libs/bleGps.js"></script>
+
+        <!-- Layers -->
+        <script type="text/javascript" src="js/modules/layers/pointsCollection.js"></script>
+        <script type="text/javascript" src="js/modules/layers/polyLayer.js"></script>
+        <script type="text/javascript" src="js/modules/layers/polygonsLayer.js"></script>
+        <script type="text/javascript" src="js/modules/layers/polylinesLayer.js"></script>
+        <script type="text/javascript" src="js/modules/layers/pointsLayer.js"></script>
+
+        <!-- UI objects models -->
+        <script type="text/javascript" src="js/modules/panels/panelModel.js"></script>
+        <script type="text/javascript" src="js/modules/panels/stylePanelModel.js"></script>
+
+        <!-- Map objects models -->
+        <script type="text/javascript" src="js/modules/map/mapModel.js"></script>
+        <script type="text/javascript" src="js/modules/point/pointModel.js"></script>
+        <script type="text/javascript" src="js/modules/poly/polyModel.js"></script>
+        <script type="text/javascript" src="js/modules/polygon/polygonModel.js"></script>
+
+        <!-- Map objects views -->
+        <script type="text/javascript" src="js/modules/map/mapView.js"></script>
+        <script type="text/javascript" src="js/modules/point/pointView.js"></script>
+        <script type="text/javascript" src="js/modules/poly/polyView.js"></script>
+        <script type="text/javascript" src="js/modules/polygon/polygonView.js"></script>
+
+        <!-- UI views -->
+        <script type="text/javascript" src="js/ui-views/statesView.js"></script>
+        <script type="text/javascript" src="js/ui-views/actionsView.js"></script>
+        <script type="text/javascript" src="js/ui-views/editDeleteView.js"></script>
+        <!-- panels -->
+        <script type="text/javascript" src="js/ui-views/panels/panelView.js"></script>
+        <script type="text/javascript" src="js/ui-views/panels/stylePanelView.js"></script>
+
+        <!-- Helpers -->
+        <script type="text/javascript" src="js/helpers/customPointStyles.js"></script>
+        <script type="text/javascript" src="js/helpers/functions.js"></script>
+        <script type="text/javascript" src="js/testLayer.js"></script>
+
+        <!-- Main Controllers -->
+        <script type="text/javascript" src="js/modules/main/actionsController.js"></script>
+        <script type="text/javascript" src="js/modules/main/uiController.js"></script>
+        <script type="text/javascript" src="js/modules/main/mapper.js"></script>
+
+        <script type="text/javascript" src="js/bootstrap.js"></script>
+
+        <!-- Test Setup -->
+        <script>
+          var expect = chai.expect;
+          mocha.setup("bdd");
+
+          window.onload = function () {
+            (window.mochaPhantomJS || mocha).run();
+          };
+        </script>
+
+        <script type="text/javascript" src="js/bootstrap.js"></script>
+
+        <!-- Tests. -->
+        <script src="tests/modules/point/pointModel.spec.js"></script>
+    </head>
+    <body>
+        <div id="mocha"></div>
+
+        <!-- Test Fixtures. -->
+        <div id="fixtures"
+             style="display: none; visibility: hidden;"></div>
+
+    </body>
+</html>
