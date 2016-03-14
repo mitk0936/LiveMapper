@@ -43,7 +43,7 @@ var editDeleteView = Backbone.View.extend({
 						// save to local storage
 						break;
 					case "edit":
-						mapper.uiController.panels['stylePanel'].open();
+						mapper.uiController.panels['stylePanel'].open(map.get("currentSelection"));
 						break;
 					case "delete":
 						map.deleteItem(map.get("currentSelection"));

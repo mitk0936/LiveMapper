@@ -29,6 +29,7 @@ var panelView = Backbone.View.extend({
             self.domEl = $("#" + self.model.get('id')).panel({
             	close: function( event, ui ) {
             		self.model.set('state', self.model.get('states')['0']);
+            		self.removePanelContent();
             		self.domEl = self.domEl.detach();
             	}
             });
@@ -41,13 +42,17 @@ var panelView = Backbone.View.extend({
 
 		if( !self.domEl ) {
 			this.render(function () {
+				self.renderPanelContent();
 				self.domEl.panel("open");
 			});
 		} else {
 			mapper.uiController.getPageContainer().append(self.domEl);
+			self.renderPanelContent();
 			self.domEl.panel("open");
 		}
 	},
+	renderPanelContent: function () {},
+	removePanelContent: function () {},
 	close: function() {
 		this.domEl && this.domEl.panel('close');
 	}

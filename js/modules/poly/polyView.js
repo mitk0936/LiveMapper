@@ -39,12 +39,16 @@ var polyView = Backbone.View.extend({
 		});
 
 		this.model.on("change:isSelected", function(e) {
-			e.changed.isSelected ? self.setStyleSelected() : self.setStyleDeselected();
 	    	self.togglePoints(e.changed.isSelected);
 		});
 
+		this.model.on("change:fillColor", function (e) {
+			self.fillColorChanged(e);
+		});
+
 		this.model.on("destroy", function() {
-			/* when the model is destroyed
+			/*
+				when the model is destroyed
 				destroy every contained object
 			*/
 			self.destroy();
@@ -89,20 +93,15 @@ var polyView = Backbone.View.extend({
 			}),  index + 1);
 		}		
 	},
-	setStyleSelected: function() {
-		this.model.set("fillColor", this.model.defaults.selectedFillColor);
-		this.googleMapsObject.setOptions({strokeColor: this.model.defaults.selectedFillColor});
-	},
-	setStyleDeselected: function() {
-		this.model.set("fillColor", this.model.defaults.fillColor);
-		this.googleMapsObject.setOptions({strokeColor: this.model.defaults.fillColor});
-	},
 	togglePoints: function(stateVisible) {
 		if (stateVisible) {
 			this.model.get('pointsCollection').showAll();
 		} else {
 			this.model.get('pointsCollection').hideAll();
 		}
+	},
+	fillColorChanged: function(ev) {
+		this.googleMapsObject.setOptions({strokeColor: ev.changed.fillColor});
 	},
 	destroy: function() {
 		this.model.get("pointsCollection").off("add change:latLng remove");

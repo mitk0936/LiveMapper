@@ -18,6 +18,11 @@
         <script type="text/javascript" src="js/lib/backbone.js"></script>
         <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 
+        <!-- Helpers -->
+        <script type="text/javascript" src="js/helpers/configStyles.js"></script>
+        <script type="text/javascript" src="js/helpers/functions.js"></script>
+        <script type="text/javascript" src="js/testLayer.js"></script>
+
         <!-- Custom Plugins -->
         <script type="text/javascript" src="js/custom-libs/mapTyler.js"></script>
         <script type="text/javascript" src="js/custom-libs/bleGps.js"></script>
@@ -28,7 +33,7 @@
         <script type="text/javascript" src="js/modules/layers/polygonsLayer.js"></script>
         <script type="text/javascript" src="js/modules/layers/polylinesLayer.js"></script>
         <script type="text/javascript" src="js/modules/layers/pointsLayer.js"></script>
-
+        
         <!-- UI objects models -->
         <script type="text/javascript" src="js/modules/panels/panelModel.js"></script>
         <script type="text/javascript" src="js/modules/panels/stylePanelModel.js"></script>
@@ -44,7 +49,7 @@
         <script type="text/javascript" src="js/modules/point/pointView.js"></script>
         <script type="text/javascript" src="js/modules/poly/polyView.js"></script>
         <script type="text/javascript" src="js/modules/polygon/polygonView.js"></script>
-
+        
         <!-- UI views -->
         <script type="text/javascript" src="js/ui-views/statesView.js"></script>
         <script type="text/javascript" src="js/ui-views/actionsView.js"></script>
@@ -52,27 +57,25 @@
         <!-- panels -->
         <script type="text/javascript" src="js/ui-views/panels/panelView.js"></script>
         <script type="text/javascript" src="js/ui-views/panels/stylePanelView.js"></script>
-
-        <!-- Helpers -->
-        <script type="text/javascript" src="js/helpers/customPointStyles.js"></script>
-        <script type="text/javascript" src="js/helpers/functions.js"></script>
-        <script type="text/javascript" src="js/testLayer.js"></script>
+        <!-- controls -->
+        <script type="text/javascript" src="js/ui-views/controls/controlView.js"></script>
+        <script type="text/javascript" src="js/ui-views/controls/colorControlView.js"></script>
 
         <!-- Main Controllers -->
         <script type="text/javascript" src="js/modules/main/actionsController.js"></script>
         <script type="text/javascript" src="js/modules/main/uiController.js"></script>
         <script type="text/javascript" src="js/modules/main/mapper.js"></script>
-
+        
         <script type="text/javascript" src="js/bootstrap.js"></script>
 
         <!-- Test Setup -->
         <script>
-          var expect = chai.expect;
-          mocha.setup("bdd");
+            var expect = chai.expect;
+            mocha.setup("bdd");
 
-          window.onload = function () {
-            (window.mochaPhantomJS || mocha).run();
-          };
+            window.onload = function () {
+                (window.mochaPhantomJS || mocha).run();
+            };
         </script>
 
         <script type="text/javascript" src="js/bootstrap.js"></script>

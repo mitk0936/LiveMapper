@@ -1,0 +1,13 @@
+<div class="colors-container clearfix">
+	<% _.each(colors, function(color, key) { %>
+		<div
+			class="left color-item"
+			style="background-color: <%= color %>"
+			data-key="<%= key %>"
+			data-color="<%= color %>">
+			<div class="overlay">
+				<span class="label"><%= key %></span>
+			</div>
+		</div>
+	<% }); %>
+</div>

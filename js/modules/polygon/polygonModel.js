@@ -4,8 +4,14 @@ var polygon = poly.extend({
 		type: "polygon",
 
 		isSelected: false,
-		fillColor: "#333",
-		selectedFillColor: "#ff4444"
+		fillColor: configStyles.mapColors['black-20'],
+		stylePanelConfiguration: {
+			'fillColor': {
+				controlType: 'colorControl',
+				getter: 'getFillColor',
+				setter: 'setFillColor'
+			}
+		}
 	},
 	createView: function(){
 		new polygonView({

@@ -19,10 +19,9 @@ var pointView = Backbone.View.extend({
             optimized : true,
 	        draggable: self.model.get("draggable"),
             clickable: self.model.get("clickable"),
-	        icon : icon || icons['defaultIcon']
+	        icon : icon || configStyles.icons['defaultIcon']
 	    });
 
-		// this.googleMarker.setMap(mapper.mapCanvas);
 		this.initMapHandlers();
 	},
 	initMapHandlers: function() {
@@ -70,7 +69,7 @@ var pointView = Backbone.View.extend({
 		this.model.on("change:isSelected", function() {
 	    	if (self.model.get("single")) {
 	    		if (self.model.get("isSelected")) {
-		    		self.googleMarker.setIcon(icons['selectedIcon']);
+		    		self.googleMarker.setIcon(configStyles.icons['selectedIcon']);
 		    	} else {
 		    		self.setDefaultPointStyle();
 		    	}
@@ -119,16 +118,16 @@ var pointView = Backbone.View.extend({
 	    Backbone.View.prototype.remove.call(this);
 	},
 	setDefaultPointStyle: function() {
-		this.googleMarker.setIcon(icons['defaultIcon']);
+		this.googleMarker.setIcon(configStyles.icons['defaultIcon']);
 	},
 	setStartPointStyle: function() {
-		this.googleMarker.setIcon(icons['startIcon']);
+		this.googleMarker.setIcon(configStyles.icons['startIcon']);
 	},
 	setEndPointStyle: function() {
-		this.googleMarker.setIcon(icons['endIcon']);
+		this.googleMarker.setIcon(configStyles.icons['endIcon']);
 	},
 	setSelectedPointStyle: function() {
-		this.googleMarker.setIcon(icons['selectedIcon']);
+		this.googleMarker.setIcon(configStyles.icons['selectedIcon']);
 	},
 	destroyGoogleMarker: function() {
 		// unbind map property, because it is binded to the pointsCollection layer

@@ -5,43 +5,50 @@ var poly = Backbone.Model.extend({
 
 		// styles/interaction properties
 		isSelected: false,
-		fillColor: "#333",
-		selectedFillColor: "#ff4444",
+		fillColor: configStyles.mapColors['black-20'],
+		stylePanelConfiguration: {
+			'fillColor': {
+				controlType: 'colorControl',
+				getter: 'getFillColor',
+				setter: 'setFillColor'
+			}
+		}
 	},
-	initialize: function(){
+	initialize: function() {
 		var self = this;
 		
 		this.set("pointsCollection", new pointsCollection());
 		this.createView();
 	},
-	createView: function(){
+	createView: function() {
 		new polyView({
 			model: this
 		});
 	},
-	addPoint: function(point, index){
-		if(!isNaN(parseInt(index))){
+	addPoint: function(point, index) {
+		if (!isNaN(parseInt(index))) {
 			var at = {
 				at: parseInt(index)
 			}
 		}
 		
-		// used to hide/show, the whole points layer at once
+		// used to hide/show the whole points layer at once
 		var pointsCollection = this.get('pointsCollection');
 		
 		point.set("_parentCollection", pointsCollection);
 		pointsCollection.add(point, at);
 	},
-	setStartEndPoints: function(){
-		if(this.get("pointsCollection").length){
+	setStartEndPoints: function() {
+		if (this.get("pointsCollection").length) {
 			this.get("pointsCollection").first().set("isStartPoint", true);
 
-			if(this.get("pointsCollection").length > 1){
+			if (this.get("pointsCollection").length > 1) {
 				// there is an end point
 				var markedAsLastPoint = this.get("pointsCollection").where({"isEndPoint": true});
 
-				$.each(markedAsLastPoint, function(){
-					this.set("isEndPoint", false); // previous last point, is no more a last point
+				$.each(markedAsLastPoint, function() {
+					// unset previous last point
+					this.set("isEndPoint", false);
 				});
 				
 				// set the last added point, to be an end point
@@ -49,13 +56,21 @@ var poly = Backbone.Model.extend({
 			}
 		}
 	},
-	getContent: function(){
+	getFillColor: function () {
+		return {
+			'colorHex': this.get('fillColor')
+		}
+	},
+	setFillColor: function (controlData) {
+		this.set('fillColor', controlData.colorHex);
+	},
+	getContent: function() {
 		var poly = {};
 
 		poly.type = this.type,
 		poly.points = new Array();
 
-		$.each(this.get("pointsCollection").models, function(){
+		$.each(this.get("pointsCollection").models, function() {
 			var p = {
 				"lat" : this.get("lat"),
 				"lng" : this.get("lng")
@@ -66,7 +81,7 @@ var poly = Backbone.Model.extend({
 
 		return poly;
 	},
-	toJSON: function(){
+	toJSON: function() {
 		
 	}
 });

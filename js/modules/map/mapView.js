@@ -24,6 +24,9 @@ var mapView = Backbone.View.extend({
 		
 		mapper.mapCanvas = new google.maps.Map(document.getElementById(mapper.mapDomId), opts);
 		this.model.trigger('mapCreated');
+
+		// fix for fitting the google map after init
+		$(window).trigger('resize');
 	},
 	initHandlers: function() {
 		var self = this;

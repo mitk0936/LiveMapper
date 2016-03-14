@@ -2,14 +2,14 @@ var polygonView = polyView.extend({
 	render: function() {
 		var self = this;
 
-		if(this.googleMapsObject) {
-			this.googleMapsObject.setMap(null);
-		}
+		// destroy previous object, if it exists
+		this.googleMapsObject && this.googleMapsObject.setMap(null);
 
 		this.googleMapsObject = new google.maps.Polygon({
 			path: self.model.get('pointsCollection').pluck("latLng"),
 			geodesic: true,
 			strokeOpacity: 0.2,
+			fillOpacity: 0.8,
 			strokeWeight: 1,
 			fillColor: self.model.get("fillColor")
 		});
@@ -17,12 +17,7 @@ var polygonView = polyView.extend({
 		this.googleMapsObject.setMap(mapper.mapCanvas);
 		this.initMapHandlers();
 	},
-	setStyleSelected: function() {
-		this.model.set("fillColor", this.model.defaults.selectedFillColor);
-		this.googleMapsObject.setOptions({fillColor: this.model.defaults.selectedFillColor});
-	},
-	setStyleDeselected: function() {
-		this.model.set("fillColor", this.model.defaults.fillColor);
-		this.googleMapsObject.setOptions({fillColor: this.model.defaults.fillColor});
+	fillColorChanged: function (ev) {
+		this.googleMapsObject.setOptions({fillColor: ev.changed.fillColor});
 	}
 });
