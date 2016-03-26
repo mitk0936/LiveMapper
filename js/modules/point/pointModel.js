@@ -1,4 +1,4 @@
-var point = Backbone.Model.extend({
+var point = baseMapObject.extend({
 	defaults:{
 		type: "point",
 		lat: 42.5555555,
@@ -15,6 +15,14 @@ var point = Backbone.Model.extend({
 	    isStartPoint: false,
 	    isEndPoint: false,
 	    visible: true,
+	    label: "",
+	    stylePanelConfiguration: {
+			'label': {
+				controlType: 'labelControl',
+				getter: 'getLabel',
+				setter: 'setLabel'
+			}
+		},
 
 	    _parentCollection: null,
 	},
@@ -40,7 +48,7 @@ var point = Backbone.Model.extend({
 	remove: function() {
 		var retrieveData = this.toJSON();
 
-		if(this._parentCollection) {
+		if (this._parentCollection) {
 			retrieveData._parentCollection = this._parentCollection;
 		}
 

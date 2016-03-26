@@ -7,7 +7,8 @@ var uiController = function () {
 				'stylePanel': null
 			},
 			'controls': {
-				'colorControl': null
+				'colorControl': null,
+				'labelControl': null
 			},
 			'views': {
 				'editDeleteView': null,
@@ -37,8 +38,12 @@ var uiController = function () {
 		var self = this;
 
 		// controlls open/close
-		$("body").on('click', '.control-head', function () {
-			$(this).parent().find('.control-content').toggle();
+		$("body").on('click', '.control-head', function onClickControlHead() {
+			var controlContent = $(this).parent().find('.control-content');
+			controlContent.toggle();
+
+			var isVisible = controlContent.is(":visible");
+			isVisible && controlContent.trigger('openned');
 		});
 
 

@@ -1,4 +1,4 @@
-var poly = Backbone.Model.extend({
+var poly = baseMapObject.extend({
 	defaults:{
 		pointsCollection: null,
 		type: "polyline",
@@ -6,11 +6,17 @@ var poly = Backbone.Model.extend({
 		// styles/interaction properties
 		isSelected: false,
 		fillColor: configStyles.mapColors['black-20'],
+		label: "",
 		stylePanelConfiguration: {
 			'fillColor': {
 				controlType: 'colorControl',
 				getter: 'getFillColor',
 				setter: 'setFillColor'
+			},
+			'label': {
+				controlType: 'labelControl',
+				getter: 'getLabel',
+				setter: 'setLabel'
 			}
 		}
 	},

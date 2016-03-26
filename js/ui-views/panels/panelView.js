@@ -40,7 +40,7 @@ var panelView = Backbone.View.extend({
 	open: function() {
 		var self = this;
 
-		if( !self.domEl ) {
+		if ( !self.domEl ) {
 			this.render(function () {
 				self.renderPanelContent();
 				self.domEl.panel("open");
