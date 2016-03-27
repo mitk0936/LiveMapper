@@ -1,4 +1,6 @@
-var point = baseMapObject.extend({
+this.Mapper = this.Mapper || {};
+
+Mapper.point = Mapper.baseMapObject.extend({
 	defaults:{
 		type: "point",
 		lat: 42.5555555,
@@ -33,7 +35,7 @@ var point = baseMapObject.extend({
 			self.updatePositionData();
 		});
 
-		new pointView({model: this});
+		new Mapper.pointView({model: this});
 	},
 	updatePositionData: function(refresh) {
 		var latLng = this.get("latLng");

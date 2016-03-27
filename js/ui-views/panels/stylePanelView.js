@@ -1,6 +1,8 @@
-var stylePanelView = panelView.extend({
+this.Mapper = this.Mapper || {};
+
+Mapper.stylePanelView = Mapper.panelView.extend({
 	initialize: function () {
-		stylePanelView.__super__.initialize.apply(this);
+		Mapper.stylePanelView.__super__.initialize.apply(this);
 		this.renderedControls = {};
 	},
 	renderPanelContent: function () {
@@ -11,7 +13,7 @@ var stylePanelView = panelView.extend({
 
 		for (var key in stylePanelConfiguration) {
 			var controlType = stylePanelConfiguration[key].controlType;
-			this.renderedControls[controlType] = mapper.uiController.controls[controlType];
+			this.renderedControls[controlType] = Mapper.uiController.controls[controlType];
 
 			this.renderedControls[controlType].target = targetItem;
 			this.renderedControls[controlType].getter = stylePanelConfiguration[key]['getter'],

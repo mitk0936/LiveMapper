@@ -1,4 +1,6 @@
-var controlView = Backbone.View.extend({
+this.Mapper = this.Mapper || {};
+
+Mapper.controlView = Backbone.View.extend({
 	initialize: function () {
 		this.options = _.extend({
 			wrapperTemplateName: "control-wrapper.html"
@@ -24,15 +26,13 @@ var controlView = Backbone.View.extend({
 			self.initHandlers();
 		});
 	},
-	initHandlers: function () {
-		
-	},
+	initHandlers: function () {},
 	loadTemplate: function (onLoadedTemplate) {
 
 		if( !this.template ) {
 			var self = this;
 
-			mapper.uiController.loadControlWrapper(function onWrapperLoaded(wrapperTemplate) {
+			Mapper.uiController.loadControlWrapper(function onWrapperLoaded(wrapperTemplate) {
 
 				var compileTemplate = _.template(wrapperTemplate);
 

@@ -1,4 +1,6 @@
-var confirmChangeView = Backbone.View.extend({
+this.Mapper = this.Mapper || {};
+
+Mapper.confirmChangeView = Backbone.View.extend({
 	initialize: function(){
 
 	},

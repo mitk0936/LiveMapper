@@ -1,12 +1,14 @@
-var colorControl = controlView.extend({
+this.Mapper = this.Mapper || {};
+
+Mapper.colorControl = Mapper.controlView.extend({
 	defaults: {
 		id: "color-control",
 		templateName: "color-control.html",
 		title: "Color control",
-		colors: configStyles.mapColors
+		colors: Utils.configStyles.mapColors
 	},
 	afterInit: function () {
-		colorControl.__super__.afterInit.apply(this);
+		Mapper.colorControl.__super__.afterInit.apply(this);
 
 		this.resultObj = {
 			'colorHex': null
@@ -24,9 +26,20 @@ var colorControl = controlView.extend({
 			$(this).addClass('selected');
 			$(this).siblings().removeClass('selected');
 
+			var resultObjBefore = _.clone(self.resultObj);
+
 			var selectedColorHex = $(this).attr('data-color');
 			self.resultObj.colorHex = selectedColorHex;
 			self.updateColor();
+
+			var resultObjAfter = _.clone(self.resultObj);
+
+			Mapper.actions.addAction(new Mapper.changeItemStyleAction({
+				'target': self.target,
+				'setter': self.setter,
+				'resultObjBefore': resultObjBefore,
+				'resultObjAfter': resultObjAfter
+			}));
 
 			e.preventDefault();
 		});

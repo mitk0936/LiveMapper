@@ -1,4 +1,6 @@
-var polyView = Backbone.View.extend({
+this.Mapper = this.Mapper || {};
+
+Mapper.polyView = Backbone.View.extend({
 	initialize: function() {
 		this.initHandlers();
 
@@ -18,7 +20,7 @@ var polyView = Backbone.View.extend({
 			strokeWeight: 3
 		});
 
-		this.googleMapsObject.setMap(mapper.mapCanvas);
+		this.googleMapsObject.setMap(Mapper.mapController.mapCanvas);
 		this.initMapHandlers();
 	},
 	initHandlers: function() {
@@ -26,7 +28,7 @@ var polyView = Backbone.View.extend({
 
 		this.model.get("pointsCollection").on("pointDragStop", function(ev) {
 			if (ev.changed) {
-				self.insertHelperPoints(ev.model, this);
+				// self.insertHelperPoints(ev.model, this);
 			}
 		});
 
@@ -59,7 +61,7 @@ var polyView = Backbone.View.extend({
 
 		this.googleMapsObject.addListener('mousedown', function(event) {
 			if (!self.model.get("isSelected")) {
-				mapper.getCurrentMap().selectCurrent(self.model);
+				Mapper.mapController.getCurrentMap().selectCurrent(self.model);
 			}
 		});
 	},
@@ -72,9 +74,9 @@ var polyView = Backbone.View.extend({
 		if (!isFirst) {
 			// insert before if the moved point wasnt the first one
 			var prev = collection.at(index - 1);
-			var pos = calcMiddlePoint(prev.get("latLng").lat(), prev.get("latLng").lng(), pointModel.get("latLng").lat(), pointModel.get("latLng").lng());
+			var pos = Utils.calcMiddlePoint(prev.get("latLng").lat(), prev.get("latLng").lng(), pointModel.get("latLng").lat(), pointModel.get("latLng").lng());
 			
-			this.model.addPoint(new point({
+			this.model.addPoint(new Mapper.point({
 				lat: pos["lat"],
 				lng: pos["lng"]
 			}), index);
@@ -85,9 +87,9 @@ var polyView = Backbone.View.extend({
 		if (!isLast) {
 			// insert after if the moved point wasnt the last one
 			var next = collection.at(index + 1);
-			var pos = calcMiddlePoint(pointModel.get("latLng").lat(), pointModel.get("latLng").lng(), next.get("latLng").lat(), next.get("latLng").lng());
+			var pos = Utils.calcMiddlePoint(pointModel.get("latLng").lat(), pointModel.get("latLng").lng(), next.get("latLng").lat(), next.get("latLng").lng());
 			
-			this.model.addPoint(new point({
+			this.model.addPoint(new Mapper.point({
 				lat: pos["lat"],
 				lng: pos["lng"]
 			}),  index + 1);

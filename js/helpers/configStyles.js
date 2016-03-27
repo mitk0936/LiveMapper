@@ -1,4 +1,6 @@
-var configStyles = {
+this.Utils = this.Utils || {};
+
+Utils.configStyles = {
 	icons: {
 		defaultIcon: {
 			path: google.maps.SymbolPath.CIRCLE,

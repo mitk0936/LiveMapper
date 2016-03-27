@@ -1,3 +1,5 @@
+this.Mapper = this.Mapper || {};
+
 (function () {
 	"use strict";
 
@@ -8,7 +10,11 @@
     }
 
     function onDeviceReady() {
-        mapper = new mapper();
-        mapper.init();
+
+        Mapper.actions = new actions();
+        Mapper.mapController = new mapController();
+        Mapper.uiController = new uiController();
+
+        Mapper.mapController.init();
     };
 })();

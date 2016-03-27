@@ -1,4 +1,6 @@
-var baseMapObject = Backbone.Model.extend({
+this.Mapper = this.Mapper || {};
+
+Mapper.baseMapObject = Backbone.Model.extend({
 	getLabel: function () {
 		return {
 			'label': this.get('label')

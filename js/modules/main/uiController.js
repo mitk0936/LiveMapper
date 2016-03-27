@@ -29,7 +29,7 @@ var uiController = function () {
 
 	var createComponentsFromObjectNamesArray = function (components) {
 		for ( var key in components ) {
-			components[key] = new window[key]();
+			components[key] = new Mapper[key]();
 		}
 	};
 
@@ -46,10 +46,9 @@ var uiController = function () {
 			isVisible && controlContent.trigger('openned');
 		});
 
-
 		// close panels on window resize/orientationchange
-		$(window).on('resize orientationchange', function () {
-			$.each(uiComponents['panels'], function (name, panel) {
+		$(window).on('resize orientationchange', function onWindowResize() {
+			$.each(uiComponents['panels'], function forEachPanel(name, panel) {
 				panel && panel.close();
 			});
 		});
@@ -58,7 +57,7 @@ var uiController = function () {
 	var loadControlWrapper = function (onLoaded) {
 		if (!controlWrapper) {
 
-			$.get('templates/controls/control-wrapper.html', function (template) {
+			$.get('templates/controls/control-wrapper.html', function onTemplateLoaded(template) {
 	        	controlWrapper = template;
 	        	onLoaded(controlWrapper);
 	        }, 'html');

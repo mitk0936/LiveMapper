@@ -1,4 +1,6 @@
-var polygonView = polyView.extend({
+this.Mapper = this.Mapper || {};
+
+Mapper.polygonView = Mapper.polyView.extend({
 	render: function() {
 		var self = this;
 
@@ -14,7 +16,7 @@ var polygonView = polyView.extend({
 			fillColor: self.model.get("fillColor")
 		});
 
-		this.googleMapsObject.setMap(mapper.mapCanvas);
+		this.googleMapsObject.setMap(Mapper.mapController.mapCanvas);
 		this.initMapHandlers();
 	},
 	fillColorChanged: function (ev) {

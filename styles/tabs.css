@@ -1,0 +1,92 @@
+/* Tab view, buttons */
+
+a {
+	color: #333 !important;
+	text-decoration: none;
+	display: block;
+	font-size: 14px;
+	line-height: 50px;
+	text-align: center;
+	text-shadow: none !important;
+}
+
+.current a, a:active {
+	color:#fff !important;
+	background-color: #333;
+}
+
+.tab-view, .button {
+	position: absolute;
+	background-color: #efefef;
+	z-index: 999999999;
+	border-radius: 6px;
+	overflow: hidden;
+	height: 50px;
+}
+
+.tab-view ul {
+	list-style-type: none;
+	width: 100%;
+	clear: both;
+}
+.tab-view ul li {
+	float: left;
+	width: 33.3333333333333333333333333333%;
+}
+
+.tab-view ul li.disabled a, .tab-view ul li.disabled a:active {
+	background-color: #ccc;
+}
+
+/* State tabs */
+
+#states {
+	left: 25%;
+	right: 25%;
+	bottom: 1%;
+}
+
+/* Edit tabs */
+
+#edit-options {
+	right: 1%;
+	left: auto;
+	top: 1%;
+	width: 40%;
+}
+
+#edit-options ul li {
+	width: 37%;
+}
+
+#edit-options ul li.tick {
+	width: 26%;
+}
+
+/* Actions */
+
+#actions {
+	width: 100px;
+	top: 60px;
+	left: 10px;
+}
+
+#actions li {
+	width: 50%;
+}
+
+#actions li.disabled a {
+	background-color: #ccc;
+	color: #ddd;
+}
+
+@media  only screen  and ( max-width: 400px )  {
+	.tab-view li a {
+		font-size: 12px;
+	}
+
+	#states {
+		left: 15%;
+		right: 15%;
+	}
+}

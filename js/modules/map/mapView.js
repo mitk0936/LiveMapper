@@ -1,11 +1,13 @@
-var mapView = Backbone.View.extend({
+this.Mapper = this.Mapper || {};
+
+Mapper.mapView = Backbone.View.extend({
 	initialize: function() {
 		var self = this;
 
-		$.get('templates/map-holder.html', function (data) {
+		$.get('templates/map-holder.html', function appendMapTempalateAndInit(data) {
 			template = _.template(data);
 
-			mapper.uiController.getMainContainer().append(template);
+			Mapper.uiController.getMainContainer().append(template);
 			
 			self.initGoogleMap();
 			self.initHandlers();
@@ -16,13 +18,19 @@ var mapView = Backbone.View.extend({
 
 		var opts = {
 	        center: {lat:self.model.get("centerLat"), lng: self.model.get("centerLng")},
-	        zoom: mapper.defaultZoom,
+	        zoom: Mapper.mapController.defaultZoom,
 	        mapTypeId: google.maps.MapTypeId.ROADMAP,
 	        mapMaker: true,
-		    styles: [{featureType: "poi", stylers: [{visibility: "off"}]}]
+		    styles: [{featureType: "poi", stylers: [{visibility: "off"}]}],
+		    mapTypeControlOptions: {
+		    	style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+		  	},
+			streetViewControl: false,
+			rotateControl: true,
+			fullscreenControl: false
 	    };
 		
-		mapper.mapCanvas = new google.maps.Map(document.getElementById(mapper.mapDomId), opts);
+		Mapper.mapController.mapCanvas = new google.maps.Map(document.getElementById(Mapper.mapController.mapDomId), opts);
 		this.model.trigger('mapCreated');
 
 		// fix for fitting the google map after init
@@ -30,9 +38,9 @@ var mapView = Backbone.View.extend({
 	},
 	initHandlers: function() {
 		var self = this;
-		google.maps.event.addListener(mapper.mapCanvas, 'click', function(event) {
-			mapper.mapCanvas.panTo(event.latLng);
-	        self.model.addPoint(new point({
+		google.maps.event.addListener(Mapper.mapController.mapCanvas, 'click', function(event) {
+			Mapper.mapController.mapCanvas.panTo(event.latLng);
+	        self.model.addPoint(new Mapper.point({
 	        	lat: event.latLng.lat(),
 	        	lng: event.latLng.lng()
 	        }));

@@ -1,4 +1,6 @@
-var Map = Backbone.Model.extend({
+this.Mapper = this.Mapper || {};
+
+Mapper.Map = Backbone.Model.extend({
 	defaults:{
 		centerLat : 42.644716,
 		centerLng : 23.233456,
@@ -7,16 +9,16 @@ var Map = Backbone.Model.extend({
 	initialize: function() {
 		var self = this;
 
-		new mapView({
+		new Mapper.mapView({
 			model: self
 		});
 
 		this.on('mapCreated', function () {
-			this.set("pointsLayer", new pointsLayer());
-			this.set("polylinesLayer", new polylinesLayer());
-			this.set("polygonsLayer", new polygonsLayer());
+			this.set("pointsLayer", new Mapper.pointsLayer());
+			this.set("polylinesLayer", new Mapper.polylinesLayer());
+			this.set("polygonsLayer", new Mapper.polygonsLayer());
 
-			mapper.initLayers(); // experimental
+			Mapper.mapController.initLayers(); // experimental
 		})
 	},
 	addPoint: function(p) {
@@ -27,19 +29,19 @@ var Map = Backbone.Model.extend({
 		}
 	},
 	createSelection: function(p) {
-		if (mapper.currentState === "point") {
+		if (Mapper.mapController.currentState === "point") {
 			this.get("pointsLayer").add(p);
 		} else {
 			var newPoly,
 				currentLayer;
 
-			switch(mapper.currentState) {
+			switch(Mapper.mapController.currentState) {
 				case "polyline":
-					newPoly = new poly();
+					newPoly = new Mapper.poly();
 					currentLayer = this.get("polylinesLayer");
 					break;
 				case "polygon":
-					newPoly = new polygon();
+					newPoly = new Mapper.polygon();
 					currentLayer = this.get("polygonsLayer");
 					break;
 				default:

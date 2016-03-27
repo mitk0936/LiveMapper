@@ -1,11 +1,13 @@
-function calcMiddlePoint(lat1, lon1, lat2, lon2){
+this.Utils = this.Utils || {};
+
+Utils.calcMiddlePoint = function(lat1, lon1, lat2, lon2) {
  	return {
  		"lat": (lat1 + lat2)/2,
  		"lng": (lon1 + lon2)/2
  	};
 }
 
-function loadScript(src, callback){
+Utils.loadScript = function (src, callback) {
 	var script = document.createElement('script');
 	script.type = 'text/javascript';
 	//the url of the needed jquery

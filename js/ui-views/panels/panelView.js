@@ -1,4 +1,6 @@
-var panelView = Backbone.View.extend({
+this.Mapper = this.Mapper || {};
+
+Mapper.panelView = Backbone.View.extend({
 	initialize: function (options) {
 		this.initHandlers();
 	},
@@ -19,13 +21,13 @@ var panelView = Backbone.View.extend({
 	render: function(onRender) {
 		var self = this;
 
-		$.get('templates/panels/' + this.model.get('templateName'), function (template) {
+		$.get('templates/panels/' + this.model.get('templateName'), function onLoadedPanelTemplate(template) {
         	var html = $(template);
 
         	var compiledTemplate = _.template(template),
 				html = compiledTemplate(self.model.defaults);
 
-            mapper.uiController.getPageContainer().append($(html));
+            Mapper.uiController.getPageContainer().append($(html));
             self.domEl = $("#" + self.model.get('id')).panel({
             	close: function( event, ui ) {
             		self.model.set('state', self.model.get('states')['0']);
@@ -46,7 +48,7 @@ var panelView = Backbone.View.extend({
 				self.domEl.panel("open");
 			});
 		} else {
-			mapper.uiController.getPageContainer().append(self.domEl);
+			Mapper.uiController.getPageContainer().append(self.domEl);
 			self.renderPanelContent();
 			self.domEl.panel("open");
 		}

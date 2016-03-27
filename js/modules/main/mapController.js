@@ -1,7 +1,8 @@
-var mapper = function() {
+this.Mapper = this.Mapper || {};
+
+var mapController = function() {
+
 	var currentMap,
-		actionsCtrl = new actionsController(),
-		uiCtrl = new uiController(),
 		currentState =  "point",
 		mapDomId = "map",
 		defaultZoom = 14,
@@ -10,9 +11,8 @@ var mapper = function() {
 
 	function init() {
 		
-		currentMap = new Map();
-		actionsCtrl.init();
-		uiCtrl.init();
+		currentMap = new Mapper.Map();
+		Mapper.uiController.init();
 
 		return this;
 	}
@@ -26,7 +26,7 @@ var mapper = function() {
 		var mapMaxZoom = 19;
 		var maptiler = new google.maps.ImageMapType({
 		    getTileUrl: function(coord, zoom) { 
-		        var proj = mapper.mapCanvas.getProjection();
+		        var proj = Mapper.mapController.mapCanvas.getProjection();
 		        var z2 = Math.pow(2, zoom);
 		        var tileXSize = 256 / z2;
 		        var tileYSize = 256 / z2;
@@ -54,16 +54,14 @@ var mapper = function() {
 	        zoom: 14
 	    };
 
-		mapper.mapCanvas.setZoom(14);
-		mapper.mapCanvas.setMapTypeId('satellite');
-		mapper.mapCanvas.overlayMapTypes.insertAt(0, maptiler);
+		Mapper.mapController.mapCanvas.setZoom(14);
+		Mapper.mapController.mapCanvas.setMapTypeId('satellite');
+		Mapper.mapController.mapCanvas.overlayMapTypes.insertAt(0, maptiler);
 	}
 
 	return {
 		// public methods
 		init: init,
-		actionsController: actionsCtrl,
-		uiController: uiCtrl,
 		currentState: currentState,
 		mapDomId: mapDomId,
 		defaultZoom: defaultZoom,

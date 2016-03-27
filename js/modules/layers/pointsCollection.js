@@ -1,4 +1,6 @@
-var pointsCollection = Backbone.Collection.extend({
+this.Mapper = this.Mapper || {};
+
+Mapper.pointsCollection = Backbone.Collection.extend({
 	initialize: function(){
 		this.pointsViewLayer = new google.maps.MVCObject();
 		this.initHandlers();
@@ -7,7 +9,7 @@ var pointsCollection = Backbone.Collection.extend({
 
 	},
 	showAll: function () {
-		this.pointsViewLayer.set('points', mapper.mapCanvas);
+		this.pointsViewLayer.set('points', Mapper.mapController.mapCanvas);
 	},
 	hideAll: function () {
 		this.pointsViewLayer.set('points', null);

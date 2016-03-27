@@ -1,0 +1,19 @@
+/* Panels */
+.ui-panel .ui-panel-inner {
+    overflow: auto;
+    position: absolute; 
+    top: 0; left: 0; right: 0; bottom: 0;  
+    -webkit-overflow-scrolling: touch;
+}
+
+.ui-panel-inner {
+	padding: 0;
+}
+
+.ui-panel-inner h1 {
+    padding: 10px;
+    font-weight: normal;
+    font-size: 25px;
+    color: #333;
+    border-bottom: 1px dashed #888;
+}

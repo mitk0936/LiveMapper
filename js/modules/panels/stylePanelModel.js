@@ -1,4 +1,6 @@
-var stylePanel = panel.extend({
+this.Mapper = this.Mapper || {};
+
+Mapper.stylePanel = Mapper.panel.extend({
 	defaults: {
 		id: 'style-panel',
 		templateName: 'panel.html',
@@ -7,7 +9,7 @@ var stylePanel = panel.extend({
 		title: 'Edit Selection'
 	},
 	initialize: function () {
-		stylePanel.__super__.initialize.apply(this);
+		Mapper.stylePanel.__super__.initialize.apply(this);
 	},
 	open: function (targetItem) {
 		
@@ -16,14 +18,14 @@ var stylePanel = panel.extend({
 		}
 
 		this.set('targetItem', targetItem);
-		stylePanel.__super__.open.apply(this);
+		Mapper.stylePanel.__super__.open.apply(this);
 	},
 	close: function () {
 		this.set('targetItem', null);
-		stylePanel.__super__.close.apply(this);
+		Mapper.stylePanel.__super__.close.apply(this);
 	},
 	createView: function () {
-		new stylePanelView({
+		new Mapper.stylePanelView({
 			model: this
 		});
 	}

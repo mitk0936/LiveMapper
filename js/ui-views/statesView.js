@@ -1,11 +1,13 @@
-var statesView = Backbone.View.extend({
+this.Mapper = this.Mapper || {};
+
+Mapper.statesView = Backbone.View.extend({
     initialize: function () {
         var self = this;
 
-        $.get('templates/states-tabs.html', function (template) {
+        $.get('templates/states-tabs.html', function onTemplateLoaded(template) {
             var html = $(template);
 
-            mapper.uiController.getMainContainer().append(html);
+            Mapper.uiController.getMainContainer().append(html);
 
             self.el = $("#states");
             self.initHandlers();
@@ -13,24 +15,24 @@ var statesView = Backbone.View.extend({
     },
     initHandlers: function() {
     	var self = this,
-            map = mapper.getCurrentMap();
+            map = Mapper.mapController.getCurrentMap();
 
     	this.el.on("click", "li:not(.current)", function(e) {
     		$(self.el).find(".current").removeClass("current");
     		$(this).addClass("current");
 
     		// set the current state
-    		mapper.currentState = $(this).find("a").attr("data-val");
+    		Mapper.mapController.currentState = $(this).find("a").attr("data-val");
     		map.clearSelection();
     		e.preventDefault();
     	});
 
     	map.on("change:currentSelection", function() {
             if (map.get("currentSelection")) {
-                mapper.currentState = map.get("currentSelection").get("type");
+                Mapper.mapController.currentState = map.get("currentSelection").get("type");
             }
             
-			self.setCurrent(mapper.currentState);
+			self.setCurrent(Mapper.mapController.currentState);
 		});
     },
     reInitHandlers: function () {

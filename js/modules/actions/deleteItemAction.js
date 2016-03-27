@@ -1,3 +1,3 @@
-var deleteItemAction = action.extend({
+this.Mapper = this.Mapper || {};
 
-});
+Mapper.deleteItemAction = action.extend({});

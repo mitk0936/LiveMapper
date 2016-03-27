@@ -1,10 +1,12 @@
-var polygon = poly.extend({
+this.Mapper = this.Mapper || {};
+
+Mapper.polygon = Mapper.poly.extend({
 	defaults: {
 		pointsCollection: null,
 		type: "polygon",
 
 		isSelected: false,
-		fillColor: configStyles.mapColors['black-20'],
+		fillColor: Utils.configStyles.mapColors['black-20'],
 		label: "",
 		stylePanelConfiguration: {
 			'fillColor': {
@@ -20,7 +22,7 @@ var polygon = poly.extend({
 		}
 	},
 	createView: function(){
-		new polygonView({
+		new Mapper.polygonView({
 			model: this
 		});
 	}

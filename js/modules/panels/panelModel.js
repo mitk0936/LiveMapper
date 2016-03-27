@@ -1,4 +1,6 @@
-var panel = Backbone.Model.extend({
+this.Mapper = this.Mapper || {};
+
+Mapper.panel = Backbone.Model.extend({
 	defaults: {
 		id: 'default-panel',
 		templateName: 'panel.html',
@@ -18,7 +20,7 @@ var panel = Backbone.Model.extend({
 		this.createView();
 	},
 	createView: function () {
-		new panelView({
+		new Mapper.panelView({
 			model: this
 		});
 	},

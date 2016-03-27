@@ -1,1 +1,3 @@
-var polylinesLayer = polyLayer.extend({});
+this.Mapper = this.Mapper || {};
+
+Mapper.polylinesLayer = Mapper.polyLayer.extend({});

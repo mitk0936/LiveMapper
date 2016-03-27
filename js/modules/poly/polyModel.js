@@ -1,11 +1,13 @@
-var poly = baseMapObject.extend({
+this.Mapper = this.Mapper || {};
+
+Mapper.poly = Mapper.baseMapObject.extend({
 	defaults:{
 		pointsCollection: null,
 		type: "polyline",
 
 		// styles/interaction properties
 		isSelected: false,
-		fillColor: configStyles.mapColors['black-20'],
+		fillColor: Utils.configStyles.mapColors['black-20'],
 		label: "",
 		stylePanelConfiguration: {
 			'fillColor': {
@@ -23,11 +25,11 @@ var poly = baseMapObject.extend({
 	initialize: function() {
 		var self = this;
 		
-		this.set("pointsCollection", new pointsCollection());
+		this.set("pointsCollection", new Mapper.pointsCollection());
 		this.createView();
 	},
 	createView: function() {
-		new polyView({
+		new Mapper.polyView({
 			model: this
 		});
 	},

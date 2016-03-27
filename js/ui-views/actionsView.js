@@ -1,13 +1,21 @@
-var actionsView = Backbone.View.extend({
+this.Mapper = this.Mapper || {};
+
+Mapper.actionsView = Backbone.View.extend({
 	initialize: function(){
 		var self = this;
 
-		$.get('templates/actions-tabs.html', function (template) {
-            var html = $(template);
+		this.config = {
+			'undo': 'undo',
+			'redo': 'redo',
+			'disabled' : 'disabled'
+		};
 
-            debugger;
+		$.get('templates/actions-tabs.html', function onTemplateLoaded(template) {
 
-            mapper.uiController.getMainContainer().append(html); 
+            var compileTemplate = _.template(template);
+			var html = $(compileTemplate(self.config));
+
+            Mapper.uiController.getMainContainer().append(html); 
 
            	self.el = $("#actions");
 			self.initHandlers();
@@ -18,14 +26,12 @@ var actionsView = Backbone.View.extend({
 
 		this.el.on("click", "li:not(.disabled) a", function(e){
     		var action = $(this).attr("data-val");
-    		
-    		mapper.getCurrentMap().clearSelection();
 
     		switch(action){
-    			case "undo":
+    			case self.config["undo"]:
     				self.model.undo();
     				break;
-				case "redo":
+				case self.config["redo"]:
 					self.model.redo();
 					break;
     		}
@@ -33,12 +39,22 @@ var actionsView = Backbone.View.extend({
     		e.preventDefault();
     	});
 
-    	this.model.on("change:stackDone", function(){
-
+    	this.model.get('stackDone').on("add remove", function() {
+    		self.updateButton(self.config['undo'], self.model.get('stackDone'));
 		});
 
-		this.model.on("change:stackUndone", function(){
-
+		this.model.get('stackUndone').on("add remove", function() {
+			self.updateButton(self.config['redo'], self.model.get('stackUndone'));
 		});
+	},
+	updateButton: function(buttonType, stack) {
+
+		var button = this.el.find("li a[data-val='" + buttonType + "']").closest('li');
+
+		if ( stack.length === 0 ) {
+			button.addClass('disabled');
+		} else {
+			button.removeClass('disabled');
+		}
 	}
 });

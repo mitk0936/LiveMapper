@@ -1,0 +1,68 @@
+/* Controls */
+.control .control-head {
+	padding: 10px;
+	cursor: pointer;
+	background-color: #333;
+	margin-bottom: 2px;
+}
+
+.control .control-head span.expand-arrow {
+	display: block;
+	font-size: 22px;
+	font-weight: bold;
+}
+
+.control .control-head h4, .control .control-head span.expand-arrow {
+	color: #fff;
+	font-weight: normal;
+	font-size: 18px;
+	line-height: 30px;
+}
+
+.control-content {
+	display: none;
+}
+
+/* color control */
+
+.colors-container .color-item {
+	float: left;
+	width: 33.33333333333%;
+	height: 0;
+	padding-bottom: 33.33333333333%;
+	position: relative;
+}
+
+.colors-container .color-item .overlay {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	text-align: center;
+	top: 0;
+	background-color: rgba(33, 33, 33, 0.2);
+	display: none;
+}
+
+.colors-container .color-item.selected .overlay {
+	display: block;
+}
+
+.colors-container .color-item .overlay span.label {
+	position: absolute;
+	bottom: 60%;
+	top: 40%;
+    color: #fff;
+    left: 0;
+    right: 0;
+}
+
+/* label control */
+.label-container input{
+	border:0;
+	padding: 15px 5px;
+	display: block;
+	border-bottom: 1px solid #333;
+	background-color: #efefef;
+	width: 100%;
+}
