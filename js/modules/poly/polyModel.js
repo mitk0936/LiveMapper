@@ -67,8 +67,10 @@ Mapper.poly = Mapper.baseMapObject.extend({
 
 		// refresh all points
 		for (var i = 0; i < models.length; i++) {
-			this.get('pointsCollection').models[i].set(pointsCollectionJSON[i]);
-			this.get('pointsCollection').models[i].trigger('refresh');
+			if ( JSON.stringify(pointsCollectionJSON[i]) != JSON.stringify(models[i].toJSON()) ) {
+				this.get('pointsCollection').models[i].set(pointsCollectionJSON[i]);
+				this.get('pointsCollection').models[i].trigger('refresh');
+			}
 		}
 
 		// add some points to the array, if the new collection is bigger
