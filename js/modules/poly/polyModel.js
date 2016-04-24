@@ -1,9 +1,11 @@
+'use strict';
 this.Mapper = this.Mapper || {};
 
 Mapper.poly = Mapper.baseMapObject.extend({
 	defaults:{
+		pointsCollectionJSON: [],
 		pointsCollection: null,
-		type: "polyline",
+		type: Utils.CONFIG.polyType['polyline'],
 
 		// styles/interaction properties
 		isSelected: false,
@@ -23,28 +25,85 @@ Mapper.poly = Mapper.baseMapObject.extend({
 		}
 	},
 	initialize: function() {
-		var self = this;
-		
 		this.set("pointsCollection", new Mapper.pointsCollection());
+		
 		this.createView();
+
+		this.initiallyCreatePointsCollection();
+
+		this.on('refresh', this.refreshPointsCollection);
 	},
 	createView: function() {
 		new Mapper.polyView({
 			model: this
 		});
 	},
-	addPoint: function(point, index) {
-		if (!isNaN(parseInt(index))) {
-			var at = {
-				at: parseInt(index)
+	initiallyCreatePointsCollection: function () {
+
+		var pointsCollectionJSON = this.get('pointsCollectionJSON');
+
+		var pointsArr = [];
+
+		for (var i = 0; i < pointsCollectionJSON.length; i++ ) {
+			pointsArr.push(new Mapper.point(pointsCollectionJSON[i]));
+		}
+
+		this.get("pointsCollection").add(pointsArr);
+	},
+	refreshPointsCollection: function () {
+		// called on refresh after some actions executed
+		var models = this.get('pointsCollection').models,
+			pointsCollectionJSON = this.get('pointsCollectionJSON'),
+			modelsIndexesToDestroy = [];
+
+		if ( pointsCollectionJSON.length < models.length ) {
+			// destroy last points if points array decreased
+			var lastNModels = this.get('pointsCollection').last(models.length - pointsCollectionJSON.length);
+
+			for ( var i = 0; i < lastNModels.length; i++ ) {
+				lastNModels[i].destroy();
 			}
 		}
-		
-		// used to hide/show the whole points layer at once
-		var pointsCollection = this.get('pointsCollection');
-		
-		point.set("_parentCollection", pointsCollection);
-		pointsCollection.add(point, at);
+
+		// refresh all points
+		for (var i = 0; i < models.length; i++) {
+			this.get('pointsCollection').models[i].set(pointsCollectionJSON[i]);
+			this.get('pointsCollection').models[i].trigger('refresh');
+		}
+
+		// add some points to the array, if the new collection is bigger
+		var newPointsToAdd = [];
+
+		for (var j = this.get('pointsCollection').length; j < pointsCollectionJSON.length; j++) {
+			newPointsToAdd.push(new Mapper.point(pointsCollectionJSON[j]));
+		}
+
+		newPointsToAdd.length && this.get("pointsCollection").add(newPointsToAdd);
+
+		this.setStartEndPoints();
+	},
+	addPoint: function(point, index) {
+		index = parseInt(index);
+
+		if ( !isNaN(index) ) {
+			var pos = {
+				at: index
+			}
+		}
+
+		var jsonStateBefore = this.toJSON();
+
+		this.get('pointsCollection').add(point, pos);
+
+		if (!point.get('isHelper')) {
+			// add action for newly added point, only if it is not a helper point		
+			Mapper.actions.addAction(new Mapper.changeItemStateAction({
+				'target': this,
+				'jsonStateBefore': jsonStateBefore,
+				'jsonStateAfter': this.toJSON(),
+				'refreshPosition': true
+			}));
+		}
 	},
 	setStartEndPoints: function() {
 		if (this.get("pointsCollection").length) {
@@ -70,26 +129,23 @@ Mapper.poly = Mapper.baseMapObject.extend({
 		}
 	},
 	setFillColor: function (controlData) {
+		var jsonStateBefore = this.toJSON();
+		
 		this.set('fillColor', controlData.colorHex);
-	},
-	getContent: function() {
-		var poly = {};
 
-		poly.type = this.type,
-		poly.points = new Array();
-
-		$.each(this.get("pointsCollection").models, function() {
-			var p = {
-				"lat" : this.get("lat"),
-				"lng" : this.get("lng")
-			};
-
-			poly.points.push(p);
-		});
-
-		return poly;
+		Mapper.actions.addAction(new Mapper.changeItemStateAction({
+			'target': this,
+			'jsonStateBefore': jsonStateBefore,
+			'jsonStateAfter': this.toJSON(),
+			'refreshPosition': false
+		}));
 	},
 	toJSON: function() {
-		
+		return {
+			type: this.get('type'),
+			pointsCollectionJSON: this.get('pointsCollection').toJSON(),
+			fillColor: this.get('fillColor'),
+			label: this.get('label')
+		}	
 	}
 });

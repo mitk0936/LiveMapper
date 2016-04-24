@@ -31,6 +31,13 @@ Utils.configStyles = {
 			strokeWeight: 0,
 			fillColor: "#FF3333",
 			fillOpacity: 1
+		},
+		helperIcon: {
+			path: google.maps.SymbolPath.CIRCLE,
+			scale: 7,
+			strokeWeight: 0,
+			fillColor: "#84EC71",
+			fillOpacity: 1
 		}
 	},
 	mapColors: {

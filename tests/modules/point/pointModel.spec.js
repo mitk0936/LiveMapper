@@ -5,6 +5,5 @@ describe("Test point model", function () {
 		expect(p.get('lat')).to.be.defined;
 		expect(p.get('lng')).to.be.defined;
 		expect(p.get('latLng')).to.not.equal(null);
-
 	});
 });

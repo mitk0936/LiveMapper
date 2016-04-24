@@ -1,3 +1,4 @@
+'use strict';
 this.Mapper = this.Mapper || {};
 
 Mapper.Map = Backbone.Model.extend({
@@ -13,13 +14,14 @@ Mapper.Map = Backbone.Model.extend({
 			model: self
 		});
 
-		this.on('mapCreated', function () {
-			this.set("pointsLayer", new Mapper.pointsLayer());
-			this.set("polylinesLayer", new Mapper.polylinesLayer());
-			this.set("polygonsLayer", new Mapper.polygonsLayer());
+		this.set("pointsLayer", new Mapper.pointsLayer());
+		this.set("polylinesLayer", new Mapper.polyLayer());
+		this.set("polygonsLayer", new Mapper.polyLayer());
 
-			Mapper.mapController.initLayers(); // experimental
-		})
+		this.on('mapCreated', function () {
+			// experimental
+			Mapper.mapController.initLayers();
+		});
 	},
 	addPoint: function(p) {
 		if (this.get("currentSelection") && this.get("currentSelection").addPoint) {
@@ -62,11 +64,14 @@ Mapper.Map = Backbone.Model.extend({
 		});
 	},
 	deselectCurrent: function() {
-		this.get("currentSelection") && this.get("currentSelection").set("isSelected", false);
+		if (this.get("currentSelection")) {
+			this.get("currentSelection").set("isSelected", false);
+		}
 	},
 	deleteItem: function(item) {
 		if (confirm("Are you sure you want to delete this " + item.get("type"))) {
     		item.get("isSelected") && this.deselectCurrent();
+    		Mapper.actions.clearActionsForItem(item);
 			item.destroy();
 		}
 	},
@@ -74,16 +79,20 @@ Mapper.Map = Backbone.Model.extend({
 		this.deselectCurrent();
 		this.set("currentSelection", null);
 	},
+	destroy: function () {
+		this.trigger('destroy');
+	},
 	toJSON: function() {
-		var result = _.clone(this.attributes);
+		var properties = _.clone(this.attributes);
 		var self = this;
 
 		return{
-			centerLat: result.centerLat,
-			centerLng: result.centerLng,
+			centerLat: properties.centerLat,
+			centerLng: properties.centerLng,
 			pointsLayer: self.get("pointsLayer").toJSON(),
 			polylinesLayer: self.get("polylinesLayer").toJSON(),
 			polygonsLayer: self.get("polygonsLayer").toJSON()
+			// maptyler layer
 		};
 	}
 });

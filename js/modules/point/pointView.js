@@ -6,11 +6,15 @@ Mapper.pointView = Backbone.View.extend({
 		this.initHandlers();
 	},
 	render: function() {
-		var self = this;
+		var self = this,
+			icon;
 
 		if (this.googleMarker) {
-			var icon = this.googleMarker.icon;
 			this.destroyGoogleMarker();
+		}
+
+		if (this.model.get('isHelper')) {
+			icon = Utils.configStyles.icons['helperIcon'];
 		}
 
 		this.model.set("latLng", new google.maps.LatLng(self.model.get("lat"), self.model.get("lng")));
@@ -48,21 +52,32 @@ Mapper.pointView = Backbone.View.extend({
 	initDraggableEvents: function() {
 		var self = this;
 
-		var latLngBefore = self.model.get("latLng");
+		var jsonStateBefore = self.model.toJSON();
 
 		google.maps.event.addListener(this.googleMarker, 'dragstart', function(event) {
-	    	latLngBefore = event.latLng;
+			// prepare the jsonStateBefore, when point is started dragging
+			if (self.model.get('single')) {
+	    		jsonStateBefore = self.model.toJSON();
+	    	} else {
+	    		self.triggerParentPointDragStart();
+	    	}
 	    });
 
 		google.maps.event.addListener(this.googleMarker, 'dragend', function(event) {
     		self.model.set("latLng", event.latLng);
 
-	    	Mapper.actions.addAction(new Mapper.pointMoveAction({
-	    		'target': self.model,
-	    		'propName': 'latLng',
-	    		'valueBefore': latLngBefore,
-	    		'valueAfter': event.latLng
-	    	}));
+	    	if (self.model.get('single')) {
+	    		
+	    		Mapper.actions.addAction(new Mapper.changeItemStateAction({
+		    		'target': self.model,
+		    		'jsonStateBefore': jsonStateBefore,
+		    		'jsonStateAfter': self.model.toJSON(),
+		    		'refreshPosition': true
+		    	}));
+
+	    	} else {
+	    		self.triggerParentPointDragFinish();
+	    	}
 	    });
 
 	    google.maps.event.addListener(this.googleMarker, 'drag', function(event) {
@@ -104,7 +119,7 @@ Mapper.pointView = Backbone.View.extend({
 			self.googleMarker.setVisible(ev.changed.visible);
 		});
 
-		// Listen for model states changes
+		// Listeners for model states changes
 		this.model.on("destroy", function() {
 			self.destroy();
 		});
@@ -143,12 +158,20 @@ Mapper.pointView = Backbone.View.extend({
 	},
 	destroyGoogleMarker: function() {
 		// unbind map property, because it is binded to the pointsCollection layer
-		this.googleMarker.unbind('map');
+		if (this.googleMarker) {
+			this.googleMarker.unbind('map');
 
-		this.googleMarker.setMap(null);
-		this.googleMarker = null;
+			this.googleMarker.setMap(null);
+			this.googleMarker = null;
+		}
 	},
-	triggerPointDragFinish: function () {
+	triggerParentPointDragStart: function () {
+		this.triggerEventParent("pointDragStart", {
+    		model: this.model,
+    		changed: true
+    	});
+	},
+	triggerParentPointDragFinish: function () {
 		this.triggerEventParent("pointDragStop", {
     		model: this.model,
     		changed: true

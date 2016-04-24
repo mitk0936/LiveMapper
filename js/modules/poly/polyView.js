@@ -1,3 +1,4 @@
+'use strict';
 this.Mapper = this.Mapper || {};
 
 Mapper.polyView = Backbone.View.extend({
@@ -24,12 +25,26 @@ Mapper.polyView = Backbone.View.extend({
 		this.initMapHandlers();
 	},
 	initHandlers: function() {
-		var self = this;
+		var self = this,
+			polyJSONBefore = this.model.toJSON();
 
+		this.model.get("pointsCollection").on("pointDragStart", function(ev) {
+			polyJSONBefore = self.model.toJSON();
+		});
+		
 		this.model.get("pointsCollection").on("pointDragStop", function(ev) {
-			if (ev.changed) {
-				// self.insertHelperPoints(ev.model, this);
+			if (ev.changed && !(ev.model.get('isHelper'))) {
+
+				ev.model.trigger('refresh');
+				self.insertHelperPoints(ev.model, this);
 			}
+
+			Mapper.actions.addAction(new Mapper.changeItemStateAction({
+	    		'target': self.model,
+	    		'jsonStateBefore': polyJSONBefore,
+	    		'jsonStateAfter': self.model.toJSON(),
+	    		'refreshPosition': true
+	    	}));
 		});
 
 		this.model.get("pointsCollection").on("add change:latLng remove", function(e) {
@@ -40,12 +55,20 @@ Mapper.polyView = Backbone.View.extend({
 			self.model.setStartEndPoints();
 		});
 
+		this.model.get("pointsCollection").on("remove", function() {
+
+		});
+
 		this.model.on("change:isSelected", function(e) {
 	    	self.togglePoints(e.changed.isSelected);
 		});
 
 		this.model.on("change:fillColor", function (e) {
 			self.fillColorChanged(e);
+		});
+
+		this.model.on('rerender', function () {
+			self.render();
 		});
 
 		this.model.on("destroy", function() {
@@ -74,26 +97,28 @@ Mapper.polyView = Backbone.View.extend({
 		if (!isFirst) {
 			// insert before if the moved point wasnt the first one
 			var prev = collection.at(index - 1);
-			var pos = Utils.calcMiddlePoint(prev.get("latLng").lat(), prev.get("latLng").lng(), pointModel.get("latLng").lat(), pointModel.get("latLng").lng());
+			var position = Utils.calcMiddlePoint(prev.get("latLng").lat(), prev.get("latLng").lng(), pointModel.get("latLng").lat(), pointModel.get("latLng").lng());
 			
-			this.model.addPoint(new Mapper.point({
-				lat: pos["lat"],
-				lng: pos["lng"]
-			}), index);
+			this.createHelperPoint(position, index);
 
 			index++;
 		}
 
 		if (!isLast) {
 			// insert after if the moved point wasnt the last one
-			var next = collection.at(index + 1);
-			var pos = Utils.calcMiddlePoint(pointModel.get("latLng").lat(), pointModel.get("latLng").lng(), next.get("latLng").lat(), next.get("latLng").lng());
-			
-			this.model.addPoint(new Mapper.point({
-				lat: pos["lat"],
-				lng: pos["lng"]
-			}),  index + 1);
-		}		
+			index++;
+			var next = collection.at(index);
+			var position = Utils.calcMiddlePoint(pointModel.get("latLng").lat(), pointModel.get("latLng").lng(), next.get("latLng").lat(), next.get("latLng").lng());
+
+			this.createHelperPoint(position, index);
+		}
+	},
+	createHelperPoint: function (position, index) {
+		this.model.addPoint(new Mapper.point({
+			lat: position["lat"],
+			lng: position["lng"],
+			isHelper: true
+		}),  index);
 	},
 	togglePoints: function(stateVisible) {
 		if (stateVisible) {

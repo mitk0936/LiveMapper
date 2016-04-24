@@ -12,7 +12,7 @@ Mapper.colorControl = Mapper.controlView.extend({
 
 		this.resultObj = {
 			'colorHex': null
-		}
+		};
 	},
 	initHandlers: function () {
 		var self = this;
@@ -26,20 +26,9 @@ Mapper.colorControl = Mapper.controlView.extend({
 			$(this).addClass('selected');
 			$(this).siblings().removeClass('selected');
 
-			var resultObjBefore = _.clone(self.resultObj);
-
 			var selectedColorHex = $(this).attr('data-color');
 			self.resultObj.colorHex = selectedColorHex;
 			self.updateColor();
-
-			var resultObjAfter = _.clone(self.resultObj);
-
-			Mapper.actions.addAction(new Mapper.changeItemStyleAction({
-				'target': self.target,
-				'setter': self.setter,
-				'resultObjBefore': resultObjBefore,
-				'resultObjAfter': resultObjAfter
-			}));
 
 			e.preventDefault();
 		});

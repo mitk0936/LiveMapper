@@ -6,7 +6,7 @@
       "projectTypeName": "com.intel.xdk.projecttype.jsapp",
       "src": "",
       "projectGuid": "fb6d6463-7d78-4a71-9757-6a3ae7b4e91a",
-      "lastModifiedDate": 1444474092389,
+      "lastModifiedDate": 1461416670778,
       "creationDate": 1441528176299
     },
     "sourceDirectory": "",
@@ -30,26 +30,36 @@
       {
         "id": "org.apache.cordova.device",
         "version": "0.2.13",
-        "selectedState": "Auto",
+        "selectedState": "Included",
         "data": {},
         "paramvals": {},
         "dependsOn": [],
         "dependedBy": [],
         "originType": "cordova.io",
         "origin": "org.apache.cordova.device",
-        "permissions": {}
+        "permissions": {},
+        "name": "Device",
+        "topLevel": true,
+        "checksum": "3f979ead",
+        "gitref": "",
+        "description": "Cordova Device Plugin"
       },
       {
         "id": "org.apache.cordova.splashscreen",
         "version": "0.3.5",
-        "selectedState": "Auto",
+        "selectedState": "Included",
         "data": {},
         "paramvals": {},
         "dependsOn": [],
         "dependedBy": [],
         "originType": "cordova.io",
-        "origin": "org.apache.cordova.splashscreen",
-        "permissions": {}
+        "origin": "cordova-plugin-splashscreen",
+        "permissions": {},
+        "name": "Splashscreen",
+        "topLevel": true,
+        "checksum": "271836cf",
+        "gitref": "",
+        "description": "Cordova Splashscreen Plugin"
       }
     ],
     "serviceMethods": [],
@@ -109,7 +119,7 @@
         "excludedLibraries_": "",
         "appVersion_": "0.0.1",
         "appVersionCode_": "1",
-        "crosswalkVersion_": "11",
+        "crosswalkVersion_": "14",
         "cordovaCLIVersion_": "4.1.2"
       },
       "iOS": {
@@ -269,7 +279,7 @@
         "addlPermissions_": "",
         "excludedLibraries_": "",
         "appVersion_": "0.0.0.1",
-        "cordovaCLIVersion_": "5.1.1"
+        "cordovaCLIVersion_": "4.1.2"
       }
     },
     "testDirectory": "test"

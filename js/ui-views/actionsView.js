@@ -11,7 +11,6 @@ Mapper.actionsView = Backbone.View.extend({
 		};
 
 		$.get('templates/actions-tabs.html', function onTemplateLoaded(template) {
-
             var compileTemplate = _.template(template);
 			var html = $(compileTemplate(self.config));
 

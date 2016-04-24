@@ -2,22 +2,23 @@ this.Mapper = this.Mapper || {};
 
 Mapper.point = Mapper.baseMapObject.extend({
 	defaults:{
-		type: "point",
+		type: Utils.CONFIG.pointType,
 		lat: 42.5555555,
 		lng: 23.34343434,
 		single: false,
-		isNew: true,
+		isHelper: false,
+		label: "",
 
 		latLng: null, // google maps object
 		
-		// styles/interaction properties
+		// visual/interaction properties
 		draggable: true,
 		clickable: true,
 		isSelected: false,
 	    isStartPoint: false,
 	    isEndPoint: false,
 	    visible: true,
-	    label: "",
+	    
 	    stylePanelConfiguration: {
 			'label': {
 				controlType: 'labelControl',
@@ -47,22 +48,16 @@ Mapper.point = Mapper.baseMapObject.extend({
 
 		refresh && this.trigger("refresh");
 	},
-	remove: function() {
-		var retrieveData = this.toJSON();
-
-		if (this._parentCollection) {
-			retrieveData._parentCollection = this._parentCollection;
-		}
-
-		return retrieveData;
-	},
 	toJSON: function() {
-		var result = _.clone(this.attributes);
+		var properties = _.clone(this.attributes);
 
 		return {
-			type: result.type,
-			lat: result.lat,
-			lng: result.lng
+			type: properties.type,
+			lat: properties.lat,
+			lng: properties.lng,
+			single: properties.single,
+			isHelper: properties.isHelper,
+			label: properties.label,
 		};
 	}
 });

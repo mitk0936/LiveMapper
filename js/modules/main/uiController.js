@@ -1,3 +1,5 @@
+'use strict';
+
 var uiController = function () {
 	var mainContainer,
 		pageContainer,

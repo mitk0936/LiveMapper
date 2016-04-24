@@ -2,8 +2,9 @@ this.Mapper = this.Mapper || {};
 
 Mapper.polygon = Mapper.poly.extend({
 	defaults: {
+		pointsCollectionJSON: [],
 		pointsCollection: null,
-		type: "polygon",
+		type: Utils.CONFIG.polyType['polygon'],
 
 		isSelected: false,
 		fillColor: Utils.configStyles.mapColors['black-20'],

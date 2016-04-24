@@ -25,10 +25,11 @@ Mapper.editDeleteView = Backbone.View.extend({
 		Mapper.mapController.getCurrentMap().on("change:currentSelection", function() {
 			self.updateVisibility();
 		});
+
+		Mapper.mapController.getCurrentMap().on("destroy", function () {
+			self.destroy();
+		});
 	},
-	reInitHandlers: function () {
-        // re init handlers when map changes
-    },
 	updateVisibility: function() {
 		var map = Mapper.mapController.getCurrentMap();
 
@@ -51,10 +52,12 @@ Mapper.editDeleteView = Backbone.View.extend({
 						map.deleteItem(map.get("currentSelection"));
 						break;
 				}
-
 			});
 		} else {
 			this.container.hide();
 		}
+	},
+	destroy: function () {
+
 	}
 });

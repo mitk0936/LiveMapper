@@ -1,3 +1,4 @@
+'use strict';
 var actions = Backbone.Model.extend({
 	initialize: function () {
 		var self = this;
@@ -13,13 +14,16 @@ var actions = Backbone.Model.extend({
 		var action = this.get('stackDone').pop();
 		
 		if (action) {
+			// Mapper.mapController.getCurrentMap().clearSelection();
 			action.undo();
 			this.get('stackUndone').push(action);
 		}	
 	},
 	redo: function () {
 		var action = this.get('stackUndone').pop();
-		action && action.redo();	
+		
+		// Mapper.mapController.getCurrentMap().clearSelection();
+		action && action.redo();
 	},
 	addAction: function (action) {
 		this.get('stackDone').add(action);
@@ -27,5 +31,18 @@ var actions = Backbone.Model.extend({
 	clearActions: function () {
 		this.get('stackDone').reset();
 		this.get('stackUndone').reset();
+	},
+	clearActionsForItem: function (item) {
+		var self = this,
+			deleteAction = function (actionsArr) {
+				for (var i = actionsArr.models.length - 1; i >= 0; i--) {
+					if (actionsArr.models[i].args.target === item) {
+						actionsArr.remove(actionsArr.models[i]);
+					}
+				};
+			};
+
+		deleteAction(this.get('stackDone'));
+		deleteAction(this.get('stackUndone'));
 	}
 });

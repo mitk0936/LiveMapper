@@ -23,23 +23,10 @@ Mapper.labelControl = Mapper.controlView.extend({
 		this.domEl.find('.control-content').on('openned', function onControlOpenned() {
 			inputText.focus();
 		});
-
-		var resultObjBefore = _.clone(self.resultObj);
 		
 		inputText.on('change', function onInputText(e) {
 			self.resultObj.label = $(this).val();
 			self.updateLabel();
-
-			var resultObjAfter = _.clone(self.resultObj);
-
-			Mapper.actions.addAction(new Mapper.changeItemStyleAction({
-				'target': self.target,
-				'setter': self.setter,
-				'resultObjBefore': resultObjBefore,
-				'resultObjAfter': resultObjAfter
-			}));
-
-			resultObjBefore = _.clone(self.resultObj);
 		});
 	},
 	updateLabel: function () {
