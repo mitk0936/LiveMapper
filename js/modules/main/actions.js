@@ -20,8 +20,11 @@ var actions = Backbone.Model.extend({
 	},
 	redo: function () {
 		var action = this.get('stackUndone').pop();
-		
-		action && action.redo();
+
+		if (action) {
+			action.redo();
+			this.get('stackDone').push(action);
+		}
 	},
 	addAction: function (action) {
 		this.get('stackDone').add(action);
