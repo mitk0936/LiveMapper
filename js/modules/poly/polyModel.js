@@ -26,12 +26,36 @@ Mapper.poly = Mapper.baseMapObject.extend({
 	},
 	initialize: function() {
 		this.set("pointsCollection", new Mapper.pointsCollection());
-		
 		this.createView();
-
 		this.initiallyCreatePointsCollection();
+		this.initHandlers();
+	},
+	initHandlers: function () {
+		var self = this;
 
 		this.on('refresh', this.refreshPointsCollection);
+
+		this.get("pointsCollection").on("add remove", function() {
+			self.setStartEndPoints();
+		});
+
+		this.get("pointsCollection").on("pointDragStart", function(ev) {
+			self.set('polyJSONBefore', self.toJSON());
+		});
+		
+		this.get("pointsCollection").on("pointDragStop", function(ev) {
+			if ( ev.changed && !(ev.model.get('isHelper')) ) {
+				ev.model.trigger('refresh');
+				self.insertHelperPoints(ev.model, this);
+			}
+
+			Mapper.actions.addAction(new Mapper.changeItemStateAction({
+	    		'target': self,
+	    		'jsonStateBefore': self.get('polyJSONBefore'),
+	    		'jsonStateAfter': self.toJSON(),
+	    		'refreshPosition': true
+	    	}));
+		});
 	},
 	createView: function() {
 		new Mapper.polyView({
@@ -49,6 +73,7 @@ Mapper.poly = Mapper.baseMapObject.extend({
 		}
 
 		this.get("pointsCollection").add(pointsArr);
+		this.setStartEndPoints();
 	},
 	refreshPointsCollection: function () {
 		// called on refresh after some actions executed
@@ -156,7 +181,10 @@ Mapper.poly = Mapper.baseMapObject.extend({
 			lat: position["lat"],
 			lng: position["lng"],
 			isHelper: true
-		}),  index);
+		}), index);
+	},
+	onPolyClicked: function () {
+		Mapper.mapController.selectCurrent(this);
 	},
 	getFillColor: function () {
 		return {

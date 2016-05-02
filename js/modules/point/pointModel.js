@@ -1,3 +1,4 @@
+'use strict';
 this.Mapper = this.Mapper || {};
 
 Mapper.point = Mapper.baseMapObject.extend({
@@ -35,11 +36,14 @@ Mapper.point = Mapper.baseMapObject.extend({
 
 		this.refreshPointType();
 
-		this.on("change:latLng", function() {
-			self.updatePositionData();
+		this.on("change:latLng", function(ev) {
+			this.set({
+				"lat" : ev.changed.latLng.lat(),
+				"lng" : ev.changed.latLng.lng(),
+			});
 		});
 
-		this.on("change:isHelper change:isStartPoint change:isEndPoint", function (ev) {
+		this.on("change:isHelper change:isStartPoint change:isEndPoint change:isSelected", function (ev) {
 			self.refreshPointType();
 		});
 
@@ -49,7 +53,6 @@ Mapper.point = Mapper.baseMapObject.extend({
 		this.set('icon', newIcon)
 	},
 	refreshPointType: function () {
-
 		if ( this.get('isEndPoint') || this.get('isStartPoint') ) {
 			this.get('isHelper', false, {
 				silent: true
@@ -71,17 +74,60 @@ Mapper.point = Mapper.baseMapObject.extend({
 			return;
 		}
 
+		if ( this.get("isSelected") ) {
+    		this.setIcon(Utils.configStyles.icons['selectedIcon']);
+    		return;
+    	}
+
 		this.setIcon(Utils.configStyles.icons['defaultIcon']);
 	},
-	updatePositionData: function(refresh) {
-		var latLng = this.get("latLng");
+	onPointClicked: function () {
+		if ( this.get("single") ) {
+    		Mapper.mapController.selectCurrent(this);
+			return;
+		}
 
-		this.set({
-			"lat" : latLng.lat(),
-			"lng" : latLng.lng(),
-		});
+		if (confirm("Are you sure you want to delete this marker")) {
+			this.destroy();
+		}
+	},
+	onPointDragStart: function () {
+		if (this.get('single')) {
+    		this.set('jsonStateBefore', this.toJSON());
+    	} else {
+    		this.triggerParentPointDragStart();
+    	}
+	},
+	onPointDragEnd: function (latLng) {
+		this.set("latLng", latLng);
 
-		refresh && this.trigger("refresh");
+    	if (this.get('single')) {
+    		Mapper.actions.addAction(new Mapper.changeItemStateAction({
+	    		'target': this,
+	    		'jsonStateBefore': this.get('jsonStateBefore'),
+	    		'jsonStateAfter': this.toJSON(),
+	    		'refreshPosition': true
+	    	}));
+    	} else {
+    		this.triggerParentPointDragFinish();
+    	}
+	},
+	triggerParentPointDragStart: function () {
+		this.triggerEventParent("pointDragStart", {
+    		model: this,
+    		changed: true
+    	});
+	},
+	triggerParentPointDragFinish: function () {
+		this.triggerEventParent("pointDragStop", {
+    		model: this,
+    		changed: true
+    	});
+	},
+	triggerEventParent: function(eventName, param) {
+		if (this.get("_parentCollection")) {
+			this.get("_parentCollection").trigger(eventName, param);
+		}
 	},
 	toJSON: function() {
 		var properties = _.clone(this.attributes);

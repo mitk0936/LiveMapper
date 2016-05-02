@@ -16,6 +16,16 @@ var mapController = function() {
 		return this;
 	}
 
+	function selectCurrent (selection) {
+		if (currentMap.get('currentSelection') !== selection) {
+			currentMap.selectCurrent(selection);
+		}
+	}
+
+	function appendToMap (object) {
+		object.setMap(mapCanvas);
+	}
+
 	function clearMap(map) {
 		Mapper.actions.clearActions();
 		currentMap.clearSelection();
@@ -115,7 +125,7 @@ var mapController = function() {
 		var mapMaxZoom = 19;
 		var maptiler = new google.maps.ImageMapType({
 		    getTileUrl: function(coord, zoom) { 
-		        var proj = Mapper.mapController.mapCanvas.getProjection();
+		        var proj = mapCanvas.getProjection();
 		        var z2 = Math.pow(2, zoom);
 		        var tileXSize = 256 / z2;
 		        var tileYSize = 256 / z2;
@@ -143,10 +153,27 @@ var mapController = function() {
 	        zoom: 14
 	    };
 
-		Mapper.mapController.mapCanvas.setZoom(14);
-		Mapper.mapController.mapCanvas.setMapTypeId('satellite');
-		Mapper.mapController.mapCanvas.overlayMapTypes.insertAt(0, maptiler);
+		mapCanvas.setZoom(14);
+		mapCanvas.setMapTypeId('satellite');
+		mapCanvas.overlayMapTypes.insertAt(0, maptiler);
 	}
+
+	function setMapCanvas (map) {
+		mapCanvas = map;
+	}
+
+	function getMapCanvas() {
+		return mapCanvas;
+	}
+
+	function bindToMap (propName, object) {
+		object.set(propName, mapCanvas);
+	}
+
+	function setMapCenter (latLng) {
+		mapCanvas.panTo(latLng);
+	}
+
 
 	return {
 		// public methods
@@ -155,7 +182,6 @@ var mapController = function() {
 		mapDomId: mapDomId,
 		defaultZoom: defaultZoom,
 		initLayers: initLayers,
-		mapCanvas: mapCanvas,
 		createPointsLayerFromJSON: createPointsLayerFromJSON,
 		createPointFromJSON: createPointFromJSON,
 		createPolyLayerFromJSON: createPolyLayerFromJSON,
@@ -163,6 +189,12 @@ var mapController = function() {
 		createMapFromJSON: createMapFromJSON,
 		createMapObjectFromJSON: createMapObjectFromJSON,
 		clearMap: clearMap,
+		selectCurrent: selectCurrent,
+		appendToMap: appendToMap,
+		bindToMap: bindToMap,
+		setMapCenter: setMapCenter,
+		setMapCanvas: setMapCanvas,
+		getMapCanvas: getMapCanvas,
 		getCurrentMap: function() {
 			return currentMap;
 		}

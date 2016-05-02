@@ -12,7 +12,7 @@ Mapper.pointsCollection = Backbone.Collection.extend({
 		})
 	},
 	showAll: function () {
-		this.pointsViewLayer.set('points', Mapper.mapController.mapCanvas);
+		Mapper.mapController.bindToMap('points', this.pointsViewLayer);
 	},
 	hideAll: function () {
 		this.pointsViewLayer.set('points', null);

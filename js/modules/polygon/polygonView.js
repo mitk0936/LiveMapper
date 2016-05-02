@@ -16,7 +16,7 @@ Mapper.polygonView = Mapper.polyView.extend({
 			fillColor: self.model.get("fillColor")
 		});
 
-		this.googleMapsObject.setMap(Mapper.mapController.mapCanvas);
+		Mapper.mapController.appendToMap(this.googleMapsObject);
 		this.initMapHandlers();
 	},
 	fillColorChanged: function (ev) {

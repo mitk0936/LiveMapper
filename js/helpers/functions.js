@@ -1,3 +1,4 @@
+'use strict';
 this.Utils = this.Utils || {};
 
 Utils.calcMiddlePoint = function(lat1, lon1, lat2, lon2) {
@@ -16,11 +17,9 @@ Utils.loadScript = function (src, callback) {
 	  var rs = this.readyState; 
 	  if (rs) {
 	    if ((rs != 'complete') && (rs != 'loaded')) {
-	    	alert("error here");
-	      return;
+	    	throw 'Some error with loading: ' + src;
+	    	return;
 	    }
-
-
 	  }
 
 	  callback();

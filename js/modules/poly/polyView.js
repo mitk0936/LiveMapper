@@ -21,42 +21,14 @@ Mapper.polyView = Backbone.View.extend({
 			strokeWeight: 4
 		});
 
-		this.googleMapsObject.setMap(Mapper.mapController.mapCanvas);
+		Mapper.mapController.appendToMap(this.googleMapsObject);
 		this.initMapHandlers();
 	},
 	initHandlers: function() {
-		var self = this,
-			polyJSONBefore = this.model.toJSON();
-
-		this.model.get("pointsCollection").on("pointDragStart", function(ev) {
-			polyJSONBefore = self.model.toJSON();
-		});
-		
-		this.model.get("pointsCollection").on("pointDragStop", function(ev) {
-			if (ev.changed && !(ev.model.get('isHelper'))) {
-
-				ev.model.trigger('refresh');
-				self.model.insertHelperPoints(ev.model, this);
-			}
-
-			Mapper.actions.addAction(new Mapper.changeItemStateAction({
-	    		'target': self.model,
-	    		'jsonStateBefore': polyJSONBefore,
-	    		'jsonStateAfter': self.model.toJSON(),
-	    		'refreshPosition': true
-	    	}));
-		});
+		var self = this;
 
 		this.model.get("pointsCollection").on("add change:latLng remove", function(e) {
 			self.render();
-		});
-
-		this.model.get("pointsCollection").on("add remove", function() {
-			self.model.setStartEndPoints();
-		});
-
-		this.model.get("pointsCollection").on("remove", function() {
-
 		});
 
 		this.model.on("change:isSelected", function(e) {
@@ -79,9 +51,7 @@ Mapper.polyView = Backbone.View.extend({
 		var self = this;
 
 		this.googleMapsObject.addListener('mousedown', function(event) {
-			if (!self.model.get("isSelected")) {
-				Mapper.mapController.getCurrentMap().selectCurrent(self.model);
-			}
+			self.model.onPolyClicked();
 		});
 	},
 	togglePoints: function(stateVisible) {

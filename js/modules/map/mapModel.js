@@ -30,6 +30,17 @@ Mapper.Map = Backbone.Model.extend({
 			this.createSelection(p);
 		}
 	},
+	onMapClicked: function (latLng) {
+        this.addPoint(new Mapper.point({
+        	lat: latLng.lat(),
+        	lng: latLng.lng()
+        }));
+
+        this.set({
+        	centerLat: latLng.lat(),
+        	centerLng: latLng.lng()
+        });
+	},
 	createSelection: function(newPoint) {
 		if ( Mapper.mapController.currentState === "point" ) {
 			this.get("pointsLayer").add(newPoint);
@@ -54,7 +65,7 @@ Mapper.Map = Backbone.Model.extend({
 			currentLayer.add(newPoly);
 		}
 	},
-	selectCurrent: function(current, isNew) {
+	selectCurrent: function(current) {
 		var map = this;
 		this.deselectCurrent();
 		this.set("currentSelection", current);

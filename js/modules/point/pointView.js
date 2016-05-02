@@ -15,99 +15,43 @@ Mapper.pointView = Backbone.View.extend({
 		
 		this.googleMarker = new google.maps.Marker({
 	        position: self.model.get("latLng"),
-	        map : Mapper.mapController.mapCanvas,
             optimized : true,
 	        draggable: self.model.get("draggable"),
             clickable: self.model.get("clickable"),
 	        icon : self.model.get('icon') || Utils.configStyles.icons['defaultIcon']
 	    });
 
+	    Mapper.mapController.appendToMap(this.googleMarker);
+
 		this.initMapHandlers();
 	},
 	initMapHandlers: function() {
 		var self = this;
 
-	    if (this.model.get("draggable")) {
-	    	this.initDraggableEvents();
-		}
+		this.model.get("draggable") && this.initDraggableEvents();
 
 		google.maps.event.addListener(this.googleMarker, 'click', function(event) {
-	    	if (self.model.get("single")) {
-	    		if (!self.model.get("isSelected")) {
-					Mapper.mapController.getCurrentMap().selectCurrent(self.model);
-				}
-			} else {
-				if (confirm("Are you sure you want to delete this marker")) {
-					self.model.destroy();
-				}
-			}
+	    	self.model.onPointClicked();
 	    });
 	},
 	initDraggableEvents: function() {
 		var self = this;
 
-		var jsonStateBefore = self.model.toJSON();
-
 		google.maps.event.addListener(this.googleMarker, 'dragstart', function(event) {
-			// prepare the jsonStateBefore, when point is started dragging
-			if (self.model.get('single')) {
-	    		jsonStateBefore = self.model.toJSON();
-	    	} else {
-	    		self.triggerParentPointDragStart();
-	    	}
-	    });
-
-		google.maps.event.addListener(this.googleMarker, 'dragend', function(event) {
-    		self.model.set("latLng", event.latLng);
-
-	    	if (self.model.get('single')) {
-	    		
-	    		Mapper.actions.addAction(new Mapper.changeItemStateAction({
-		    		'target': self.model,
-		    		'jsonStateBefore': jsonStateBefore,
-		    		'jsonStateAfter': self.model.toJSON(),
-		    		'refreshPosition': true
-		    	}));
-
-	    	} else {
-	    		self.triggerParentPointDragFinish();
-	    	}
+			self.model.onPointDragStart();
 	    });
 
 	    google.maps.event.addListener(this.googleMarker, 'drag', function(event) {
 	    	self.model.set("latLng", event.latLng);
 	    });
+
+		google.maps.event.addListener(this.googleMarker, 'dragend', function(event) {
+    		self.model.onPointDragEnd(event.latLng);
+	    });
 	},
 
 	initHandlers: function() {
 		var self = this;
-
-		this.model.on("change:isSelected", function() {
-	    	if (self.model.get("single")) {
-	    		if (self.model.get("isSelected")) {
-		    		self.googleMarker.setIcon(Utils.configStyles.icons['selectedIcon']);
-		    	} else {
-		    		self.setDefaultPointStyle();
-		    	}
-	    	}
-		});
-
-		// init events for points in polylines and polygons
-		this.listenTo(this.model, "change:isStartPoint", function() {
-			if (this.model.get("isStartPoint")) {
-				self.setStartPointStyle();
-			} else {
-				self.setDefaultPointStyle();
-			}
-		});
-
-		this.listenTo(this.model, "change:isEndPoint", function() {
-			if (this.model.get("isEndPoint")) {
-				self.setEndPointStyle();
-			} else {
-				self.setDefaultPointStyle();
-			}
-		});
 
 		this.model.on("change:visible", function(ev) {
 			self.googleMarker.setVisible(ev.changed.visible);
@@ -161,23 +105,6 @@ Mapper.pointView = Backbone.View.extend({
 
 			this.googleMarker.setMap(null);
 			this.googleMarker = null;
-		}
-	},
-	triggerParentPointDragStart: function () {
-		this.triggerEventParent("pointDragStart", {
-    		model: this.model,
-    		changed: true
-    	});
-	},
-	triggerParentPointDragFinish: function () {
-		this.triggerEventParent("pointDragStop", {
-    		model: this.model,
-    		changed: true
-    	});
-	},
-	triggerEventParent: function(eventName, param) {
-		if (this.model.get("_parentCollection")) {
-			this.model.get("_parentCollection").trigger(eventName, param);
 		}
 	}
 });

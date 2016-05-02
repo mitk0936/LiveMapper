@@ -35,9 +35,6 @@ Mapper.statesView = Backbone.View.extend({
 			self.setCurrent(Mapper.mapController.currentState);
 		});
     },
-    reInitHandlers: function () {
-        // re init handlers when map changes
-    },
     setCurrent: function(state) {
         if ($(this.el).find("[data-val='" + state + "']")) {
             $(this.el).find("[data-val='" + state + "']").closest("li").addClass("current").siblings().removeClass("current");

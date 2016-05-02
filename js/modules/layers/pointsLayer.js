@@ -7,7 +7,7 @@ Mapper.pointsLayer = Mapper.pointsCollection.extend({
 	initHandlers: function () {
 		this.on("add", function(item){
 			item.set("single", true);
-			Mapper.mapController.getCurrentMap().selectCurrent(item, true);
+			Mapper.mapController.selectCurrent(item);
 		});
 	}
 });

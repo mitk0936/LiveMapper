@@ -1,3 +1,4 @@
+'use strict';
 this.Utils = this.Utils || {};
 
 Utils.configStyles = {

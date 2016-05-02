@@ -17,7 +17,10 @@ Mapper.mapView = Backbone.View.extend({
 		var self = this;
 
 		var opts = {
-	        center: {lat:self.model.get("centerLat"), lng: self.model.get("centerLng")},
+	        center: {
+	        	lat:self.model.get("centerLat"),
+	        	lng: self.model.get("centerLng")
+	        },
 	        zoom: Mapper.mapController.defaultZoom,
 	        mapTypeId: google.maps.MapTypeId.ROADMAP,
 	        mapMaker: true,
@@ -30,20 +33,17 @@ Mapper.mapView = Backbone.View.extend({
 			fullscreenControl: false
 	    };
 		
-		Mapper.mapController.mapCanvas = new google.maps.Map(document.getElementById(Mapper.mapController.mapDomId), opts);
+		Mapper.mapController.setMapCanvas(new google.maps.Map(document.getElementById(Mapper.mapController.mapDomId), opts));
 		this.model.trigger('mapCreated');
 
-		// fix for fitting the google map after init
-		$(window).trigger('resize');
+		$(window).trigger('resize'); // fix for fitting the google map after init
 	},
 	initHandlers: function() {
 		var self = this;
-		google.maps.event.addListener(Mapper.mapController.mapCanvas, 'click', function(event) {
-			Mapper.mapController.mapCanvas.panTo(event.latLng);
-	        self.model.addPoint(new Mapper.point({
-	        	lat: event.latLng.lat(),
-	        	lng: event.latLng.lng()
-	        }));
+
+		google.maps.event.addListener(Mapper.mapController.getMapCanvas(), 'click', function(event) {
+			Mapper.mapController.setMapCenter(event.latLng);
+			self.model.onMapClicked(event.latLng);
 	    });
 	}
 });

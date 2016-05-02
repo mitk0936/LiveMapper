@@ -14,7 +14,6 @@ var actions = Backbone.Model.extend({
 		var action = this.get('stackDone').pop();
 		
 		if (action) {
-			// Mapper.mapController.getCurrentMap().clearSelection();
 			action.undo();
 			this.get('stackUndone').push(action);
 		}	
@@ -22,7 +21,6 @@ var actions = Backbone.Model.extend({
 	redo: function () {
 		var action = this.get('stackUndone').pop();
 		
-		// Mapper.mapController.getCurrentMap().clearSelection();
 		action && action.redo();
 	},
 	addAction: function (action) {
