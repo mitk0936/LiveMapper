@@ -38,11 +38,11 @@ Mapper.actionsView = Backbone.View.extend({
     		e.preventDefault();
     	});
 
-    	this.model.get('stackDone').on("add remove", function() {
+    	this.model.get('stackDone').on("add remove reset", function() {
     		self.updateButton(self.config['undo'], self.model.get('stackDone'));
 		});
 
-		this.model.get('stackUndone').on("add remove", function() {
+		this.model.get('stackUndone').on("add remove reset", function() {
 			self.updateButton(self.config['redo'], self.model.get('stackUndone'));
 		});
 	},

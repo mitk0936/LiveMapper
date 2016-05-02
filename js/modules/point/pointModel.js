@@ -12,6 +12,7 @@ Mapper.point = Mapper.baseMapObject.extend({
 		latLng: null, // google maps object
 		
 		// visual/interaction properties
+		icon: Utils.configStyles.icons['defaultIcon'],
 		draggable: true,
 		clickable: true,
 		isSelected: false,
@@ -32,11 +33,45 @@ Mapper.point = Mapper.baseMapObject.extend({
 	initialize: function() {
 		var self = this;
 
+		this.refreshPointType();
+
 		this.on("change:latLng", function() {
 			self.updatePositionData();
 		});
 
+		this.on("change:isHelper change:isStartPoint change:isEndPoint", function (ev) {
+			self.refreshPointType();
+		});
+
 		new Mapper.pointView({model: this});
+	},
+	setIcon: function (newIcon) {
+		this.set('icon', newIcon)
+	},
+	refreshPointType: function () {
+
+		if ( this.get('isEndPoint') || this.get('isStartPoint') ) {
+			this.get('isHelper', false, {
+				silent: true
+			});
+		}
+
+		if ( this.get('isEndPoint') ) {
+			this.setIcon(Utils.configStyles.icons['endIcon']);
+			return;
+		}
+
+		if ( this.get('isStartPoint') ) {
+			this.setIcon(Utils.configStyles.icons['startIcon']);
+			return;
+		}
+
+		if ( this.get('isHelper') ) {
+			this.setIcon(Utils.configStyles.icons['helperIcon']);
+			return;
+		}
+
+		this.setIcon(Utils.configStyles.icons['defaultIcon']);
 	},
 	updatePositionData: function(refresh) {
 		var latLng = this.get("latLng");

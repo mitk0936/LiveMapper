@@ -1,3 +1,4 @@
+'use strict';
 this.Mapper = this.Mapper || {};
 
 Mapper.pointView = Backbone.View.extend({
@@ -6,16 +7,9 @@ Mapper.pointView = Backbone.View.extend({
 		this.initHandlers();
 	},
 	render: function() {
-		var self = this,
-			icon;
+		var self = this;
 
-		if (this.googleMarker) {
-			this.destroyGoogleMarker();
-		}
-
-		if (this.model.get('isHelper')) {
-			icon = Utils.configStyles.icons['helperIcon'];
-		}
+		this.googleMarker && this.destroyGoogleMarker();
 
 		this.model.set("latLng", new google.maps.LatLng(self.model.get("lat"), self.model.get("lng")));
 		
@@ -25,7 +19,7 @@ Mapper.pointView = Backbone.View.extend({
             optimized : true,
 	        draggable: self.model.get("draggable"),
             clickable: self.model.get("clickable"),
-	        icon : icon || Utils.configStyles.icons['defaultIcon']
+	        icon : self.model.get('icon') || Utils.configStyles.icons['defaultIcon']
 	    });
 
 		this.initMapHandlers();
@@ -131,6 +125,10 @@ Mapper.pointView = Backbone.View.extend({
 
 		this.model.once('change:_parentCollection', function () {
 			self.bindToParentCollectionMap();
+		});
+
+		this.model.on('change:icon', function (ev) {
+			self.googleMarker.setIcon(self.model.get('icon'));
 		});
 	},
 	destroy: function() {

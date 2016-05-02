@@ -97,7 +97,7 @@ Mapper.poly = Mapper.baseMapObject.extend({
 
 		this.get('pointsCollection').add(point, pos);
 
-		if (!point.get('isHelper')) {
+		if ( !point.get('isHelper') ) {
 			// add action for newly added point, only if it is not a helper point		
 			Mapper.actions.addAction(new Mapper.changeItemStateAction({
 				'target': this,
@@ -109,6 +109,7 @@ Mapper.poly = Mapper.baseMapObject.extend({
 	},
 	setStartEndPoints: function() {
 		if (this.get("pointsCollection").length) {
+
 			this.get("pointsCollection").first().set("isStartPoint", true);
 
 			if (this.get("pointsCollection").length > 1) {
@@ -124,6 +125,38 @@ Mapper.poly = Mapper.baseMapObject.extend({
 				this.get("pointsCollection").last().set("isEndPoint", true);
 			}
 		}
+	},
+	insertHelperPoints: function(pointModel, collection) {
+		var index = collection.indexOf(pointModel);
+
+		var isFirst = (index === 0),
+			isLast = (index === collection.length - 1);
+
+		if (!isFirst) {
+			// insert before if the moved point wasnt the first one
+			var prev = collection.at(index - 1);
+			var position = Utils.calcMiddlePoint(prev.get("latLng").lat(), prev.get("latLng").lng(), pointModel.get("latLng").lat(), pointModel.get("latLng").lng());
+			
+			this.createHelperPoint(position, index);
+
+			index++;
+		}
+
+		if (!isLast) {
+			// insert after if the moved point wasnt the last one
+			index++;
+			var next = collection.at(index);
+			var position = Utils.calcMiddlePoint(pointModel.get("latLng").lat(), pointModel.get("latLng").lng(), next.get("latLng").lat(), next.get("latLng").lng());
+
+			this.createHelperPoint(position, index);
+		}
+	},
+	createHelperPoint: function (position, index) {
+		this.addPoint(new Mapper.point({
+			lat: position["lat"],
+			lng: position["lng"],
+			isHelper: true
+		}),  index);
 	},
 	getFillColor: function () {
 		return {

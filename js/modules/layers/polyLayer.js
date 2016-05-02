@@ -8,15 +8,20 @@ Mapper.polyLayer = Backbone.Collection.extend({
 		});
 	},
 	destroy: function () {
-		_.each(this.models, function (polyModel, key) {
-			polyModel.destroy();
-		});
+		var model;
+		
+		while (model = this.first()) {
+			model.destroy();
+		}
 	},
 	toJSON: function () {
 		var result = [];
 
 		_.each(this.models, function (polyModel, key) {
-			result[key] = polyModel.toJSON();
+			if ( polyModel.get('pointsCollection').length > 0 ) {
+				// do not add empty polys
+				result[key] = polyModel.toJSON();
+			}
 		});
 		
 		return result;

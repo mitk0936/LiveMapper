@@ -1,3 +1,4 @@
+'use strict';
 this.Mapper = this.Mapper || {};
 
 Mapper.editDeleteView = Backbone.View.extend({

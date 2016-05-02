@@ -18,7 +18,7 @@ Mapper.polyView = Backbone.View.extend({
 			geodesic: true,
 			strokeColor: self.model.get("fillColor"),
 			strokeOpacity: 1,
-			strokeWeight: 3
+			strokeWeight: 4
 		});
 
 		this.googleMapsObject.setMap(Mapper.mapController.mapCanvas);
@@ -36,7 +36,7 @@ Mapper.polyView = Backbone.View.extend({
 			if (ev.changed && !(ev.model.get('isHelper'))) {
 
 				ev.model.trigger('refresh');
-				self.insertHelperPoints(ev.model, this);
+				self.model.insertHelperPoints(ev.model, this);
 			}
 
 			Mapper.actions.addAction(new Mapper.changeItemStateAction({
@@ -72,10 +72,6 @@ Mapper.polyView = Backbone.View.extend({
 		});
 
 		this.model.on("destroy", function() {
-			/*
-				when the model is destroyed
-				destroy every contained object
-			*/
 			self.destroy();
 		});
 	},
@@ -87,38 +83,6 @@ Mapper.polyView = Backbone.View.extend({
 				Mapper.mapController.getCurrentMap().selectCurrent(self.model);
 			}
 		});
-	},
-	insertHelperPoints: function(pointModel, collection) {
-		var index = collection.indexOf(pointModel);
-
-		var isFirst = (index === 0),
-			isLast = (index === collection.length - 1);
-
-		if (!isFirst) {
-			// insert before if the moved point wasnt the first one
-			var prev = collection.at(index - 1);
-			var position = Utils.calcMiddlePoint(prev.get("latLng").lat(), prev.get("latLng").lng(), pointModel.get("latLng").lat(), pointModel.get("latLng").lng());
-			
-			this.createHelperPoint(position, index);
-
-			index++;
-		}
-
-		if (!isLast) {
-			// insert after if the moved point wasnt the last one
-			index++;
-			var next = collection.at(index);
-			var position = Utils.calcMiddlePoint(pointModel.get("latLng").lat(), pointModel.get("latLng").lng(), next.get("latLng").lat(), next.get("latLng").lng());
-
-			this.createHelperPoint(position, index);
-		}
-	},
-	createHelperPoint: function (position, index) {
-		this.model.addPoint(new Mapper.point({
-			lat: position["lat"],
-			lng: position["lng"],
-			isHelper: true
-		}),  index);
 	},
 	togglePoints: function(stateVisible) {
 		if (stateVisible) {

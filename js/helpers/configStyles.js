@@ -23,21 +23,21 @@ Utils.configStyles = {
 			strokeColor: "#333",
 			fillColor: "#fff",
 			strokeColor: "#FF3333",
-			fillOpacity: 1
+			fillOpacity: 0.9
 		},
 		endIcon: {
 			path: google.maps.SymbolPath.CIRCLE,
 			scale: 7,
 			strokeWeight: 0,
 			fillColor: "#FF3333",
-			fillOpacity: 1
+			fillOpacity: 0.9
 		},
 		helperIcon: {
 			path: google.maps.SymbolPath.CIRCLE,
 			scale: 7,
 			strokeWeight: 0,
 			fillColor: "#84EC71",
-			fillOpacity: 1
+			fillOpacity: 0.4
 		}
 	},
 	mapColors: {

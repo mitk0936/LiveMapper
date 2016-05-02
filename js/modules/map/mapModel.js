@@ -30,9 +30,9 @@ Mapper.Map = Backbone.Model.extend({
 			this.createSelection(p);
 		}
 	},
-	createSelection: function(p) {
-		if (Mapper.mapController.currentState === "point") {
-			this.get("pointsLayer").add(p);
+	createSelection: function(newPoint) {
+		if ( Mapper.mapController.currentState === "point" ) {
+			this.get("pointsLayer").add(newPoint);
 		} else {
 			var newPoly,
 				currentLayer;
@@ -50,7 +50,7 @@ Mapper.Map = Backbone.Model.extend({
 					break;
 			}
 
-			newPoly.addPoint(p);
+			newPoly.addPoint(newPoint);
 			currentLayer.add(newPoly);
 		}
 	},
@@ -69,7 +69,7 @@ Mapper.Map = Backbone.Model.extend({
 		}
 	},
 	deleteItem: function(item) {
-		if (confirm("Are you sure you want to delete this " + item.get("type"))) {
+		if ( confirm("Are you sure you want to delete this " + item.get("type")) ) {
     		item.get("isSelected") && this.deselectCurrent();
     		Mapper.actions.clearActionsForItem(item);
 			item.destroy();
@@ -86,7 +86,7 @@ Mapper.Map = Backbone.Model.extend({
 		var properties = _.clone(this.attributes);
 		var self = this;
 
-		return{
+		return {
 			centerLat: properties.centerLat,
 			centerLng: properties.centerLng,
 			pointsLayer: self.get("pointsLayer").toJSON(),
