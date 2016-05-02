@@ -54,18 +54,18 @@ Mapper.point = Mapper.baseMapObject.extend({
 	},
 	refreshPointType: function () {
 		if ( this.get('isEndPoint') || this.get('isStartPoint') ) {
-			this.get('isHelper', false, {
+			this.set('isHelper', false, {
 				silent: true
 			});
 		}
 
-		if ( this.get('isEndPoint') ) {
-			this.setIcon(Utils.configStyles.icons['endIcon']);
+		if ( this.get('isStartPoint') ) {
+			this.setIcon(Utils.configStyles.icons['startIcon']);
 			return;
 		}
 
-		if ( this.get('isStartPoint') ) {
-			this.setIcon(Utils.configStyles.icons['startIcon']);
+		if ( this.get('isEndPoint') ) {
+			this.setIcon(Utils.configStyles.icons['endIcon']);
 			return;
 		}
 
@@ -81,7 +81,7 @@ Mapper.point = Mapper.baseMapObject.extend({
 
 		this.setIcon(Utils.configStyles.icons['defaultIcon']);
 	},
-	onPointClicked: function () {
+	onClicked: function () {
 		if ( this.get("single") ) {
     		Mapper.mapController.selectCurrent(this);
 			return;
@@ -91,14 +91,14 @@ Mapper.point = Mapper.baseMapObject.extend({
 			this.destroy();
 		}
 	},
-	onPointDragStart: function () {
+	onDragStart: function () {
 		if (this.get('single')) {
     		this.set('jsonStateBefore', this.toJSON());
     	} else {
     		this.triggerParentPointDragStart();
     	}
 	},
-	onPointDragEnd: function (latLng) {
+	onDragEnd: function (latLng) {
 		this.set("latLng", latLng);
 
     	if (this.get('single')) {

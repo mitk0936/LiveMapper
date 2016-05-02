@@ -31,14 +31,14 @@ Mapper.pointView = Backbone.View.extend({
 		this.model.get("draggable") && this.initDraggableEvents();
 
 		google.maps.event.addListener(this.googleMarker, 'click', function(event) {
-	    	self.model.onPointClicked();
+	    	self.model.onClicked();
 	    });
 	},
 	initDraggableEvents: function() {
 		var self = this;
 
 		google.maps.event.addListener(this.googleMarker, 'dragstart', function(event) {
-			self.model.onPointDragStart();
+			self.model.onDragStart();
 	    });
 
 	    google.maps.event.addListener(this.googleMarker, 'drag', function(event) {
@@ -46,7 +46,7 @@ Mapper.pointView = Backbone.View.extend({
 	    });
 
 		google.maps.event.addListener(this.googleMarker, 'dragend', function(event) {
-    		self.model.onPointDragEnd(event.latLng);
+    		self.model.onDragEnd(event.latLng);
 	    });
 	},
 
