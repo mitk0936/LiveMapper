@@ -5,3 +5,4 @@ intelxdk.*
 *.xdke_bak
 plugins/*
 xdk/*
+xdk-publish-meta-data.json

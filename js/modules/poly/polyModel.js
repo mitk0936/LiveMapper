@@ -33,28 +33,20 @@ Mapper.poly = Mapper.baseMapObject.extend({
 	initHandlers: function () {
 		var self = this;
 
-		this.on('refresh', this.refreshPointsCollection);
+		this.on('refresh', function () {
+			self.refreshPointsCollection();
+		});
 
 		this.get("pointsCollection").on("add remove", function() {
 			self.setStartEndPoints();
 		});
 
 		this.get("pointsCollection").on("pointDragStart", function(ev) {
-			self.set('polyJSONBefore', self.toJSON());
+			self.pointDragStart();
 		});
 		
 		this.get("pointsCollection").on("pointDragStop", function(ev) {
-			if ( ev.changed && !(ev.model.get('isHelper')) ) {
-				ev.model.trigger('refresh');
-				self.insertHelperPoints(ev.model, this);
-			}
-
-			Mapper.actions.addAction(new Mapper.changeItemStateAction({
-	    		'target': self,
-	    		'jsonStateBefore': self.get('polyJSONBefore'),
-	    		'jsonStateAfter': self.toJSON(),
-	    		'refreshPosition': true
-	    	}));
+			self.pointDragStop(ev);
 		});
 	},
 	createView: function() {
@@ -151,8 +143,28 @@ Mapper.poly = Mapper.baseMapObject.extend({
 			}
 		}
 	},
-	insertHelperPoints: function(pointModel, collection) {
-		var index = collection.indexOf(pointModel);
+	select: function () {
+		Mapper.mapController.selectCurrent(this);
+	},
+	pointDragStart: function () {
+		this.set('polyJSONBefore', this.toJSON());
+	},
+	pointDragStop: function (ev) {
+		if ( ev.changed && !(ev.model.get('isHelper')) ) {
+			ev.model.trigger('refresh');
+			this.insertHelperPoints(ev.model);
+		}
+
+		Mapper.actions.addAction(new Mapper.changeItemStateAction({
+    		'target': this,
+    		'jsonStateBefore': this.get('polyJSONBefore'),
+    		'jsonStateAfter': this.toJSON(),
+    		'refreshPosition': true
+    	}));
+	},
+	insertHelperPoints: function(pointModel) {
+		var collection = this.get("pointsCollection"),
+			index = collection.indexOf(pointModel);
 
 		var isFirst = (index === 0),
 			isLast = (index === collection.length - 1);
@@ -182,9 +194,6 @@ Mapper.poly = Mapper.baseMapObject.extend({
 			lng: position["lng"],
 			isHelper: true
 		}), index);
-	},
-	select: function () {
-		Mapper.mapController.selectCurrent(this);
 	},
 	getFillColor: function () {
 		return {

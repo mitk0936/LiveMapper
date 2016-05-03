@@ -1,3 +1,4 @@
+'use strict';
 this.Mapper = this.Mapper || {};
 
 Mapper.mapView = Backbone.View.extend({
@@ -5,7 +6,7 @@ Mapper.mapView = Backbone.View.extend({
 		var self = this;
 
 		$.get('templates/map-holder.html', function appendMapTempalateAndInit(data) {
-			template = _.template(data);
+			var template = _.template(data);
 
 			Mapper.uiController.getMainContainer().append(template);
 			
@@ -18,7 +19,7 @@ Mapper.mapView = Backbone.View.extend({
 
 		var opts = {
 	        center: {
-	        	lat:self.model.get("centerLat"),
+	        	lat: self.model.get("centerLat"),
 	        	lng: self.model.get("centerLng")
 	        },
 	        zoom: Mapper.mapController.defaultZoom,

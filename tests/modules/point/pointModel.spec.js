@@ -1,17 +1,5 @@
 describe("Test point model", function () {
-	
 	var sandbox;
-	var stubSimulateDragging = function (point) {
-		var latLng;
-
-		// simulate dragging, by changing the latLng
-		for ( var i = 0; i < 1; i += 0.01 ) {
-			latLng = new google.maps.LatLng(parseFloat(point.get("lat")) + i, parseFloat(point.get("lng")) + i);
-			point.set('latLng', latLng);
-		}
-
-		return latLng;
-	};
 
 	beforeEach(function () {
 	    sandbox = sinon.sandbox.create();
