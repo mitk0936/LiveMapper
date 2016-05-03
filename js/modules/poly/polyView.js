@@ -51,7 +51,7 @@ Mapper.polyView = Backbone.View.extend({
 		var self = this;
 
 		this.googleMapsObject.addListener('mousedown', function(event) {
-			self.model.onClicked();
+			self.model.select();
 		});
 	},
 	togglePoints: function(stateVisible) {

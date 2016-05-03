@@ -81,7 +81,7 @@ Mapper.point = Mapper.baseMapObject.extend({
 
 		this.setIcon(Utils.configStyles.icons['defaultIcon']);
 	},
-	onClicked: function () {
+	select: function () {
 		if ( this.get("single") ) {
     		Mapper.mapController.selectCurrent(this);
 			return;
@@ -91,14 +91,14 @@ Mapper.point = Mapper.baseMapObject.extend({
 			this.destroy();
 		}
 	},
-	onDragStart: function () {
+	startDragging: function () {
 		if (this.get('single')) {
     		this.set('jsonStateBefore', this.toJSON());
     	} else {
     		this.triggerParentPointDragStart();
     	}
 	},
-	onDragEnd: function (latLng) {
+	stopDragging: function (latLng) {
 		this.set("latLng", latLng);
 
     	if (this.get('single')) {

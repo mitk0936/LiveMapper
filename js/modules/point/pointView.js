@@ -31,14 +31,14 @@ Mapper.pointView = Backbone.View.extend({
 		this.model.get("draggable") && this.initDraggableEvents();
 
 		google.maps.event.addListener(this.googleMarker, 'click', function(event) {
-	    	self.model.onClicked();
+	    	self.model.select();
 	    });
 	},
 	initDraggableEvents: function() {
 		var self = this;
 
 		google.maps.event.addListener(this.googleMarker, 'dragstart', function(event) {
-			self.model.onDragStart();
+			self.model.startDragging();
 	    });
 
 	    google.maps.event.addListener(this.googleMarker, 'drag', function(event) {
@@ -46,7 +46,7 @@ Mapper.pointView = Backbone.View.extend({
 	    });
 
 		google.maps.event.addListener(this.googleMarker, 'dragend', function(event) {
-    		self.model.onDragEnd(event.latLng);
+    		self.model.stopDragging(event.latLng);
 	    });
 	},
 
@@ -85,18 +85,6 @@ Mapper.pointView = Backbone.View.extend({
 		// bind to the collection layer for show/hide all points in it at once
 		var parentCollection = this.model.get('_parentCollection');
 		parentCollection && this.googleMarker.bindTo('map', parentCollection.pointsViewLayer, 'points');
-	},
-	setDefaultPointStyle: function() {
-		this.googleMarker.setIcon(Utils.configStyles.icons['defaultIcon']);
-	},
-	setStartPointStyle: function() {
-		this.googleMarker.setIcon(Utils.configStyles.icons['startIcon']);
-	},
-	setEndPointStyle: function() {
-		this.googleMarker.setIcon(Utils.configStyles.icons['endIcon']);
-	},
-	setSelectedPointStyle: function() {
-		this.googleMarker.setIcon(Utils.configStyles.icons['selectedIcon']);
 	},
 	destroyGoogleMarker: function() {
 		// unbind map property, because it is binded to the pointsCollection layer

@@ -1,7 +1,8 @@
+'use strict';
 this.Mapper = this.Mapper || {};
 
 Mapper.pointsCollection = Backbone.Collection.extend({
-	initialize: function(){
+	initialize: function() {
 		this.pointsViewLayer = new google.maps.MVCObject();
 		this.initHandlers();
 	},

@@ -1,4 +1,26 @@
 describe("Test point model", function () {
+	
+	var sandbox;
+	var stubSimulateDragging = function (point) {
+		var latLng;
+
+		// simulate dragging, by changing the latLng
+		for ( var i = 0; i < 1; i += 0.01 ) {
+			latLng = new google.maps.LatLng(parseFloat(point.get("lat")) + i, parseFloat(point.get("lng")) + i);
+			point.set('latLng', latLng);
+		}
+
+		return latLng;
+	};
+
+	beforeEach(function () {
+	    sandbox = sinon.sandbox.create();
+	});
+
+	afterEach(function () {
+	    sandbox.restore();
+	});
+
 	it("should create new point. with default values", function () {
 		var p = new Mapper.point();
 
@@ -14,7 +36,7 @@ describe("Test point model", function () {
 				changeIconCallback: function () {}
 			};
 
-		sinon.spy(callbacks, 'changeIconCallback');
+		sandbox.spy(callbacks, 'changeIconCallback');
 
 		p.on('change:icon', function (ev) {
 			callbacks.changeIconCallback(ev);
@@ -46,7 +68,7 @@ describe("Test point model", function () {
 			isHelper: true
 		});
 
-		sinon.spy(p, 'setIcon');
+		sandbox.spy(p, 'setIcon');
 
 		p.refreshPointType();
 
@@ -95,7 +117,7 @@ describe("Test point model", function () {
 		};
 
 		for (var key in points) {
-			sinon.spy(points[key], 'setIcon');
+			sandbox.spy(points[key], 'setIcon');
 			points[key].refreshPointType();
 			expect(points[key].setIcon).to.be.called.once;
 		}
@@ -114,9 +136,9 @@ describe("Test point model", function () {
 				isSelected: false
 			});
 
-			sinon.spy(Mapper.mapController, 'selectCurrent');
+			sandbox.spy(Mapper.mapController, 'selectCurrent');
 			
-			p.onClicked();
+			p.select();
 
 			expect(Mapper.mapController.selectCurrent.withArgs(p)).to.be.called.once;
 		});
@@ -139,19 +161,158 @@ describe("Test point model", function () {
 				});
 
 			// Case 1, deletion is confirmed
-			sinon.spy(p, 'destroy');
+			sandbox.spy(p, 'destroy');
 			window.confirm = confirmYes;
-			p.onClicked();
+			p.select();
 
 			expect(p.destroy).to.be.called.once;
 
 			// Case 2, when confirm is canceled
-			sinon.spy(p2, 'destroy');
+			sandbox.spy(p2, 'destroy');
 			window.confirm = confirmNo;
-			p2.onClicked();
+			p2.select();
 
 			expect(p2.destroy).to.be.not.called;
 			window.confirm = windowConfirm;
+		});
+	});
+
+	describe('testing the drag functionality, actions, triggering parent collection events', function () {
+		it('should save jsonState on start dragging single point', function () {
+			var p = new Mapper.point({
+				single: true
+			});
+
+			sandbox.spy(p, 'set');
+			p.startDragging();
+
+			expect(p.set.withArgs('jsonStateBefore', p.toJSON())).to.be.called.once;
+		});
+
+		it('should trigger events to parent collection on startDragging, if point is not single', function () {
+			var poly = new Mapper.poly(),
+				p = new Mapper.point();
+
+			poly.addPoint(p);
+
+			expect(poly.get('pointsCollection').first()).to.equal(p);
+			expect(p.get('single')).to.equal(false);
+
+			sandbox.spy(poly, 'set');
+			sandbox.spy(p, 'triggerParentPointDragStart');
+			sandbox.spy(p, 'triggerEventParent');
+
+			p.startDragging();
+
+			expect(p.triggerParentPointDragStart).to.be.called.once;
+			
+			expect(p.triggerEventParent.withArgs("pointDragStart", {
+				model: p,
+    			changed: true
+			})).to.be.called.once;
+
+			expect(poly.set.withArgs('polyJSONBefore', poly.toJSON())).to.be.called.once;
+		});
+
+		it('it should create action on point stopDragging, if it is a single point', function () {
+			var p = new Mapper.point(),
+				layer = new Mapper.pointsLayer();
+
+			layer.add(p); // single point
+
+			sandbox.spy(Mapper.actions, 'addAction');
+			sandbox.spy(p, 'toJSON');
+			sandbox.spy(p, 'get');
+
+			p.startDragging();
+
+			var finalLatLng = stubSimulateDragging(p);
+
+			p.stopDragging(finalLatLng);
+
+			expect(Mapper.actions.addAction).to.be.called.once;
+			expect(p.get.withArgs('jsonStateBefore')).to.be.called.once;
+			expect(p.toJSON).to.be.called.once;
+		});
+
+		it('should properly trigger events to parent collection on stopDragging, if point is not single', function () {
+			var poly = new Mapper.poly(),
+				p = new Mapper.point();
+
+			poly.addPoint(p);
+			p.set({
+				isHelper: true
+			});
+
+			sandbox.spy(p, 'triggerParentPointDragFinish');
+			sandbox.spy(p, 'triggerEventParent');
+
+			p.startDragging();
+
+			var finalLatLng = stubSimulateDragging(p);
+
+			p.stopDragging(finalLatLng);
+
+			expect(p.triggerParentPointDragFinish).to.be.called.once;
+			
+			expect(p.triggerEventParent.withArgs("pointDragStop", {
+				model: p,
+    			changed: true
+			})).to.be.called.once;
+		});
+	});
+	
+	describe('Testing point.toJSON method', function () {
+		it('should store the right values in the toJSON object', function () {
+			var p = new Mapper.point(),
+				pointTestObject = {
+					type: Utils.CONFIG.pointType,
+					lat: 42.1235355,
+					lng: 23.12342834,
+					single: true,
+					isHelper: false,
+					label: 'test point',
+					unknownProp: 'Should not be included in the toJSON object'
+				};
+
+			p.set(pointTestObject);
+
+			var jsonResult = p.toJSON();
+
+			expect(jsonResult.unknownProp).to.equal(undefined);
+			expect(jsonResult.isHelper).to.equal(pointTestObject.isHelper);
+			expect(jsonResult.single).to.equal(pointTestObject.single);
+			expect(jsonResult.lng).to.equal(pointTestObject.lng);
+			expect(jsonResult.lat).to.equal(pointTestObject.lat);
+			expect(jsonResult.type).to.equal(pointTestObject.type);
+
+			p.set('lng', 23.00000000);
+			jsonResult = p.toJSON();
+			expect(jsonResult.lng).to.equal(23.00000000);
+		});
+	});
+
+	describe('should properly get and set label of the point', function () {
+		it('should test use the getter and setter for label of the object', function () {
+			var p = new Mapper.point(),
+				testLabel = 'Random text here',
+				controlDataObject = {
+					'label': testLabel
+				};
+
+			// getter and setter are inherited properly
+			expect(p.getLabel).to.not.equal(undefined);
+			expect(p.setLabel).to.not.equal(undefined);
+
+			sandbox.spy(Mapper.actions, 'addAction');
+			sandbox.spy(p, 'set');
+
+			p.setLabel(controlDataObject);
+
+			expect(Mapper.actions.addAction).to.be.called.once;
+			expect(p.set.withArgs('label', testLabel)).to.be.called.once;
+
+			expect(p.get('label')).to.equal(testLabel);
 		});
 	});
 });

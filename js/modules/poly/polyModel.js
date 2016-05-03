@@ -183,7 +183,7 @@ Mapper.poly = Mapper.baseMapObject.extend({
 			isHelper: true
 		}), index);
 	},
-	onClicked: function () {
+	select: function () {
 		Mapper.mapController.selectCurrent(this);
 	},
 	getFillColor: function () {
