@@ -9,11 +9,11 @@ Mapper.pointView = Backbone.View.extend({
 	render: function() {
 		var self = this;
 
-		this.googleMarker && this.destroyGoogleMarker();
+		this.mapMarker && this.destroyMapMarker();
 
 		this.model.set("latLng", new google.maps.LatLng(self.model.get("lat"), self.model.get("lng")));
 		
-		this.googleMarker = new google.maps.Marker({
+		this.mapMarker = new google.maps.Marker({
 	        position: self.model.get("latLng"),
             optimized : true,
 	        draggable: self.model.get("draggable"),
@@ -21,7 +21,7 @@ Mapper.pointView = Backbone.View.extend({
 	        icon : self.model.get('icon') || Utils.configStyles.icons['defaultIcon']
 	    });
 
-	    Mapper.mapController.appendToMap(this.googleMarker);
+	    Mapper.mapController.appendToMap(this.mapMarker);
 
 		this.initMapHandlers();
 	},
@@ -30,32 +30,28 @@ Mapper.pointView = Backbone.View.extend({
 
 		this.model.get("draggable") && this.initDraggableEvents();
 
-		google.maps.event.addListener(this.googleMarker, 'click', function(event) {
+		google.maps.event.addListener(this.mapMarker, 'click', function(event) {
 	    	self.model.select();
 	    });
 	},
 	initDraggableEvents: function() {
 		var self = this;
 
-		google.maps.event.addListener(this.googleMarker, 'dragstart', function(event) {
+		google.maps.event.addListener(this.mapMarker, 'dragstart', function(event) {
 			self.model.startDragging();
 	    });
 
-	    google.maps.event.addListener(this.googleMarker, 'drag', function(event) {
+	    google.maps.event.addListener(this.mapMarker, 'drag', function(event) {
 	    	self.model.set("latLng", event.latLng);
 	    });
 
-		google.maps.event.addListener(this.googleMarker, 'dragend', function(event) {
+		google.maps.event.addListener(this.mapMarker, 'dragend', function(event) {
     		self.model.stopDragging(event.latLng);
 	    });
 	},
 
 	initHandlers: function() {
 		var self = this;
-
-		this.model.on("change:visible", function(ev) {
-			self.googleMarker.setVisible(ev.changed.visible);
-		});
 
 		// Listeners for model states changes
 		this.model.on("destroy", function() {
@@ -72,27 +68,28 @@ Mapper.pointView = Backbone.View.extend({
 		});
 
 		this.model.on('change:icon', function (ev) {
-			self.googleMarker.setIcon(self.model.get('icon'));
+			self.mapMarker.setIcon(self.model.get('icon'));
 		});
 	},
 	destroy: function() {
-		this.destroyGoogleMarker();
+		this.destroyMapMarker();
 	    this.undelegateEvents();
 	    this.remove(); 
 	    Backbone.View.prototype.remove.call(this);
 	},
 	bindToParentCollectionMap: function () {
 		// bind to the collection layer for show/hide all points in it at once
-		var parentCollection = this.model.get('_parentCollection');
-		parentCollection && this.googleMarker.bindTo('map', parentCollection.pointsViewLayer, 'points');
+		this.model.get('_parentCollection').bindMarker(this.mapMarker);
 	},
-	destroyGoogleMarker: function() {
+	destroyMapMarker: function() {
 		// unbind map property, because it is binded to the pointsCollection layer
-		if (this.googleMarker) {
-			this.googleMarker.unbind('map');
+		if (this.mapMarker) {
 
-			this.googleMarker.setMap(null);
-			this.googleMarker = null;
+			var parentCollection = this.model.get('_parentCollection');
+			parentCollection && parentCollection.unbindMarker(this.mapMarker);
+
+			this.mapMarker.setMap(null);
+			this.mapMarker = null;
 		}
 	}
 });

@@ -20,17 +20,17 @@ Utils.configStyles = {
 		startIcon: {
 			path: google.maps.SymbolPath.CIRCLE,
 			scale: 7,
-			strokeWeight: 4,
-			strokeColor: "#333",
-			fillColor: "#fff",
-			strokeColor: "#FF3333",
+			strokeWeight: 0,
+			fillColor: "#FF3333",
 			fillOpacity: 0.9
 		},
 		endIcon: {
 			path: google.maps.SymbolPath.CIRCLE,
 			scale: 7,
-			strokeWeight: 0,
-			fillColor: "#FF3333",
+			strokeWeight: 4,
+			strokeColor: "#333",
+			fillColor: "#fff",
+			strokeColor: "#FF3333",
 			fillOpacity: 0.9
 		},
 		helperIcon: {
@@ -38,7 +38,7 @@ Utils.configStyles = {
 			scale: 7,
 			strokeWeight: 0,
 			fillColor: "#84EC71",
-			fillOpacity: 0.4
+			fillOpacity: 0.5
 		}
 	},
 	mapColors: {

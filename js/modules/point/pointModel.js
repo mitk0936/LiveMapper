@@ -19,7 +19,6 @@ Mapper.point = Mapper.baseMapObject.extend({
 		isSelected: false,
 	    isStartPoint: false,
 	    isEndPoint: false,
-	    visible: true,
 	    
 	    stylePanelConfiguration: {
 			'label': {
@@ -37,7 +36,7 @@ Mapper.point = Mapper.baseMapObject.extend({
 		this.refreshPointType();
 
 		this.on("change:latLng", function(ev) {
-			this.set({
+			self.set({
 				"lat" : ev.changed.latLng.lat(),
 				"lng" : ev.changed.latLng.lng(),
 			});
@@ -50,7 +49,7 @@ Mapper.point = Mapper.baseMapObject.extend({
 		new Mapper.pointView({model: this});
 	},
 	setIcon: function (newIcon) {
-		this.set('icon', newIcon)
+		this.set('icon', newIcon);
 	},
 	refreshPointType: function () {
 		if ( this.get('isEndPoint') || this.get('isStartPoint') ) {
@@ -87,7 +86,10 @@ Mapper.point = Mapper.baseMapObject.extend({
 			return;
 		}
 
-		if (confirm("Are you sure you want to delete this marker")) {
+		this.confirmDestroy();
+	},
+	confirmDestroy: function () {
+		if ( confirm("Are you sure you want to delete this marker") ) {
 			this.destroy();
 		}
 	},

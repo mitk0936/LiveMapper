@@ -3,6 +3,7 @@ this.Mapper = this.Mapper || {};
 
 Mapper.pointsCollection = Backbone.Collection.extend({
 	initialize: function() {
+		// used to hide/show, the whole points layer at once
 		this.pointsViewLayer = new google.maps.MVCObject();
 		this.initHandlers();
 	},
@@ -11,6 +12,12 @@ Mapper.pointsCollection = Backbone.Collection.extend({
 		this.on('add', function (point) {
 			point.set("_parentCollection", self);
 		})
+	},
+	bindMarker: function (marker) {
+		marker.bindTo('map', this.pointsViewLayer, 'points');
+	},
+	unbindMarker: function (marker) {
+		marker.unbind('map');
 	},
 	showAll: function () {
 		Mapper.mapController.bindToMap('points', this.pointsViewLayer);

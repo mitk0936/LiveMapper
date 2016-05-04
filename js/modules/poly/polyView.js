@@ -4,16 +4,13 @@ this.Mapper = this.Mapper || {};
 Mapper.polyView = Backbone.View.extend({
 	initialize: function() {
 		this.initHandlers();
-
-		// used to hide/show, the whole points layer at once
-		this.pointsLayer = new google.maps.MVCObject();
 	},
 	render: function() {
 		var self = this;
 		
-		this.googleMapsObject && this.googleMapsObject.setMap(null);
+		this.mapObject && this.mapObject.setMap(null);
 
-		this.googleMapsObject = new google.maps.Polyline({
+		this.mapObject = new google.maps.Polyline({
 			path: self.model.get('pointsCollection').pluck("latLng"),
 			geodesic: true,
 			strokeColor: self.model.get("fillColor"),
@@ -21,7 +18,7 @@ Mapper.polyView = Backbone.View.extend({
 			strokeWeight: 4
 		});
 
-		Mapper.mapController.appendToMap(this.googleMapsObject);
+		Mapper.mapController.appendToMap(this.mapObject);
 		this.initMapHandlers();
 	},
 	initHandlers: function() {
@@ -36,7 +33,7 @@ Mapper.polyView = Backbone.View.extend({
 		});
 
 		this.model.on("change:fillColor", function (e) {
-			self.fillColorChanged(e);
+			self.setFillColor(e);
 		});
 
 		this.model.on('rerender', function () {
@@ -50,7 +47,7 @@ Mapper.polyView = Backbone.View.extend({
 	initMapHandlers: function() {
 		var self = this;
 
-		this.googleMapsObject.addListener('mousedown', function(event) {
+		this.mapObject.addListener('mousedown', function(event) {
 			self.model.select();
 		});
 	},
@@ -61,8 +58,10 @@ Mapper.polyView = Backbone.View.extend({
 			this.model.get('pointsCollection').hideAll();
 		}
 	},
-	fillColorChanged: function(ev) {
-		this.googleMapsObject.setOptions({strokeColor: ev.changed.fillColor});
+	setFillColor: function(ev) {
+		this.mapObject.setOptions({
+				strokeColor: ev.changed.fillColor
+			});
 	},
 	destroy: function() {
 		this.model.get("pointsCollection").off("add change:latLng remove");
@@ -74,12 +73,12 @@ Mapper.polyView = Backbone.View.extend({
 			this.model.get("pointsCollection").remove(this, {silent: true});
 		});
 
-		this.destroyGoogleObject();
+		this.destroyMapObject();
 	    this.undelegateEvents();
 	    this.remove(); 
 	    Backbone.View.prototype.remove.call(this);
 	},
-	destroyGoogleObject: function() {
-		this.googleMapsObject.setMap(null);
+	destroyMapObject: function() {
+		this.mapObject.setMap(null);
 	}
 });

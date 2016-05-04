@@ -49,8 +49,9 @@ body {
 }
 
 #mocha h2 {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: normal;
+  line-height: 28px;
   cursor: pointer;
 }
 
@@ -77,8 +78,8 @@ body {
 }
 
 #mocha .test.pass::before {
-  content: '?';
-  font-size: 12px;
+  content: '\2611';
+  font-size: 20px;
   display: block;
   float: left;
   margin-right: 5px;
@@ -122,8 +123,8 @@ body {
 }
 
 #mocha .test.fail::before {
-  content: '?';
-  font-size: 12px;
+  content: '☒';
+  font-size: 20px;
   display: block;
   float: left;
   margin-right: 5px;

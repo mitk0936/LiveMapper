@@ -3,7 +3,7 @@ this.Mapper = this.Mapper || {};
 
 Mapper.polyLayer = Backbone.Collection.extend({
 	initialize: function(){
-		this.on("add", function selectAsCurrentItem(item) {
+		this.on("add", function selectAsCurrentItem (item) {
 			Mapper.mapController.selectCurrent(item);
 		});
 	},

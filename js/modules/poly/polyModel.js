@@ -102,6 +102,8 @@ Mapper.poly = Mapper.baseMapObject.extend({
 		this.setStartEndPoints();
 	},
 	addPoint: function(point, index) {
+		var jsonStateBefore;
+
 		index = parseInt(index);
 
 		if ( !isNaN(index) ) {
@@ -110,8 +112,10 @@ Mapper.poly = Mapper.baseMapObject.extend({
 			}
 		}
 
-		var jsonStateBefore = this.toJSON();
-
+		if ( !point.get('isHelper') ) {
+			jsonStateBefore = this.toJSON();
+		}
+		
 		this.get('pointsCollection').add(point, pos);
 
 		if ( !point.get('isHelper') ) {
@@ -125,21 +129,24 @@ Mapper.poly = Mapper.baseMapObject.extend({
 		}
 	},
 	setStartEndPoints: function() {
-		if (this.get("pointsCollection").length) {
+		var pointsCollection = this.get("pointsCollection");
 
-			this.get("pointsCollection").first().set("isStartPoint", true);
+		if (pointsCollection.length) {
+			for ( var i = 0; i < pointsCollection.models.length; i++ ) {
+				// set as first point, only the first one
+				if ( i == 0 ) {
+					pointsCollection.models[i].set("isStartPoint", true);
+					continue;
+				}
 
-			if (this.get("pointsCollection").length > 1) {
-				// there is an end point
-				var markedAsLastPoint = this.get("pointsCollection").where({"isEndPoint": true});
+				// set as last point, only the last one
+				if ( i == pointsCollection.models.length - 1 ) {
+					pointsCollection.models[i].set("isEndPoint", true);
+					break;
+				}
 
-				$.each(markedAsLastPoint, function() {
-					// unset previous last point
-					this.set("isEndPoint", false);
-				});
-				
-				// set the last added point, to be an end point
-				this.get("pointsCollection").last().set("isEndPoint", true);
+				pointsCollection.models[i].set("isStartPoint", false);
+				pointsCollection.models[i].set("isEndPoint", false);
 			}
 		}
 	},
@@ -201,6 +208,8 @@ Mapper.poly = Mapper.baseMapObject.extend({
 		}
 	},
 	setFillColor: function (controlData) {
+		// todo: check if the fill color changed
+		// before adding new action
 		var jsonStateBefore = this.toJSON();
 		
 		this.set('fillColor', controlData.colorHex);

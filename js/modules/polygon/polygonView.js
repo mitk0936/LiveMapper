@@ -1,3 +1,4 @@
+'use strict';
 this.Mapper = this.Mapper || {};
 
 Mapper.polygonView = Mapper.polyView.extend({
@@ -5,9 +6,9 @@ Mapper.polygonView = Mapper.polyView.extend({
 		var self = this;
 
 		// destroy previous object, if it exists
-		this.googleMapsObject && this.googleMapsObject.setMap(null);
+		this.mapObject && this.mapObject.setMap(null);
 
-		this.googleMapsObject = new google.maps.Polygon({
+		this.mapObject = new google.maps.Polygon({
 			path: self.model.get('pointsCollection').pluck("latLng"),
 			geodesic: true,
 			strokeOpacity: 0.2,
@@ -16,10 +17,12 @@ Mapper.polygonView = Mapper.polyView.extend({
 			fillColor: self.model.get("fillColor")
 		});
 
-		Mapper.mapController.appendToMap(this.googleMapsObject);
+		Mapper.mapController.appendToMap(this.mapObject);
 		this.initMapHandlers();
 	},
-	fillColorChanged: function (ev) {
-		this.googleMapsObject.setOptions({fillColor: ev.changed.fillColor});
+	setFillColor: function (ev) {
+		this.mapObject.setOptions({
+			fillColor: ev.changed.fillColor
+		});
 	}
 });
