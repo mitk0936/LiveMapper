@@ -149,18 +149,18 @@ describe("Test point model", function () {
 				});
 
 			// Case 1, deletion is confirmed
-			sandbox.spy(p, 'destroy');
+			sandbox.spy(p, 'delete');
 			window.confirm = confirmYes;
 			p.select();
 
-			expect(p.destroy).to.be.called.once;
+			expect(p.delete).to.be.called.once;
 
 			// Case 2, when confirm is canceled
-			sandbox.spy(p2, 'destroy');
+			sandbox.spy(p2, 'delete');
 			window.confirm = confirmNo;
 			p2.select();
 
-			expect(p2.destroy).to.be.not.called;
+			expect(p2.delete).to.be.not.called;
 			window.confirm = windowConfirm;
 		});
 	});

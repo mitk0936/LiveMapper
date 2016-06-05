@@ -26,7 +26,7 @@ var mapController = function() {
 		object.setMap(mapCanvas);
 	}
 
-	function clearMap(map) {
+	function clearMap (map) {
 		Mapper.actions.clearActions();
 		currentMap.clearSelection();
 
@@ -35,7 +35,7 @@ var mapController = function() {
 		map.get("polygonsLayer").destroy();
 	}
 
-	function createMapFromJSON(mapData) {
+	function createMapFromJSON (mapData) {
 		// TODO -> add validations for json
 		clearMap(currentMap);
 
@@ -58,7 +58,7 @@ var mapController = function() {
 		});
 	}
 
-	function createPolyFromJSON(polyData) {
+	function createPolyFromJSON (polyData) {
 		// TODO -> add validations for json
 		var poly;
 

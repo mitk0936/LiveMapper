@@ -58,6 +58,16 @@ Mapper.pointView = Backbone.View.extend({
 			self.destroy();
 		});
 
+		this.model.on("restored", function () {
+			// only for single points
+			self.render();
+		});
+
+		this.model.on("deleted", function () {
+			// only for single points
+			self.mapMarker.setMap(null);
+		});
+
 		this.model.on("refresh", function() {
 	    	self.render();
 	    	self.bindToParentCollectionMap();
@@ -78,17 +88,23 @@ Mapper.pointView = Backbone.View.extend({
 	    Backbone.View.prototype.remove.call(this);
 	},
 	bindToParentCollectionMap: function () {
-		// bind to the collection layer for show/hide all points in it at once
-		this.model.get('_parentCollection').bindMarker(this.mapMarker);
+		if ( !this.model.get('single') ) {
+			// bind to the collection layer for show/hide all points in it at once
+			this.model.get('_parentCollection').bindMarker(this.mapMarker);
+		}
+	},
+	unbindFromParentCollectionMap: function () {
+		if ( !this.model.get('single') ) {
+			var parentCollection = this.model.get('_parentCollection');
+			parentCollection && parentCollection.unbindMarker(this.mapMarker);
+		}
+
+		this.mapMarker.setMap(null);
 	},
 	destroyMapMarker: function() {
 		// unbind map property, because it is binded to the pointsCollection layer
 		if (this.mapMarker) {
-
-			var parentCollection = this.model.get('_parentCollection');
-			parentCollection && parentCollection.unbindMarker(this.mapMarker);
-
-			this.mapMarker.setMap(null);
+			this.unbindFromParentCollectionMap();
 			this.mapMarker = null;
 		}
 	}

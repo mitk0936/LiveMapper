@@ -5,9 +5,16 @@ Mapper.pointsLayer = Mapper.pointsCollection.extend({
 		Mapper.pointsLayer.__super__.initialize.apply(this);
 	},
 	initHandlers: function () {
-		this.on("add", function(item){
+		var self = this;
+
+		this.on("add", function (item) {
 			item.set("single", true);
+			item.set("_parentCollection", self);
 			Mapper.mapController.selectCurrent(item);
+		});
+
+		this.on("remove", function () {
+
 		});
 	}
 });

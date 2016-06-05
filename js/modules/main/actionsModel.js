@@ -1,8 +1,10 @@
 'use strict';
-var actions = Backbone.Model.extend({
+
+var actionsModel = Backbone.Model.extend({
 	initialize: function () {
 		var self = this;
 
+		this.set('deletedItems', new Mapper.deletedItemsCollection());
 		this.set('stackDone', new Backbone.Collection());
 		this.set('stackUndone', new Backbone.Collection());
 
@@ -13,7 +15,7 @@ var actions = Backbone.Model.extend({
 	undo: function () {
 		var action = this.get('stackDone').pop();
 		
-		if (action) {
+		if ( action ) {
 			action.undo();
 			this.get('stackUndone').push(action);
 		}	
@@ -21,7 +23,7 @@ var actions = Backbone.Model.extend({
 	redo: function () {
 		var action = this.get('stackUndone').pop();
 
-		if (action) {
+		if ( action ) {
 			action.redo();
 			this.get('stackDone').push(action);
 		}
@@ -32,18 +34,6 @@ var actions = Backbone.Model.extend({
 	clearActions: function () {
 		this.get('stackDone').reset();
 		this.get('stackUndone').reset();
-	},
-	clearActionsForItem: function (item) {
-		var self = this,
-			deleteAction = function (actionsArr) {
-				for (var i = actionsArr.models.length - 1; i >= 0; i--) {
-					if (actionsArr.models[i].args.target === item) {
-						actionsArr.remove(actionsArr.models[i]);
-					}
-				};
-			};
-
-		deleteAction(this.get('stackDone'));
-		deleteAction(this.get('stackUndone'));
+		this.get('deletedItems').destroy();
 	}
 });

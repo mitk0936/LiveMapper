@@ -1,7 +1,7 @@
 'use strict';
 this.Mapper = this.Mapper || {};
 
-Mapper.pointsCollection = Backbone.Collection.extend({
+Mapper.pointsCollection = Mapper.baseCollection.extend({
 	initialize: function() {
 		// used to hide/show, the whole points layer at once
 		this.pointsViewLayer = new google.maps.MVCObject();
@@ -24,13 +24,6 @@ Mapper.pointsCollection = Backbone.Collection.extend({
 	},
 	hideAll: function () {
 		this.pointsViewLayer.set('points', null);
-	},
-	destroy: function () {
-		var model;
-
-		while (model = this.first()) {
-			model.destroy();
-		}
 	},
 	toJSON: function () {
 		var result = [];

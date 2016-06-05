@@ -11,7 +11,7 @@ this.Mapper = this.Mapper || {};
 
     function onDeviceReady() {
 
-        Mapper.actions = new actions();
+        Mapper.actions = new actionsModel();
         Mapper.mapController = new mapController();
         Mapper.uiController = new uiController();
 

@@ -28,6 +28,14 @@ Mapper.polyView = Backbone.View.extend({
 			self.render();
 		});
 
+		this.model.on("restored", function () {
+			self.render();
+		});
+
+		this.model.on("deleted", function () {
+			self.mapObject.setMap(null);
+		});
+
 		this.model.on("change:isSelected", function(e) {
 	    	self.togglePoints(e.changed.isSelected);
 		});
@@ -60,8 +68,8 @@ Mapper.polyView = Backbone.View.extend({
 	},
 	setFillColor: function(ev) {
 		this.mapObject.setOptions({
-				strokeColor: ev.changed.fillColor
-			});
+			strokeColor: ev.changed.fillColor
+		});
 	},
 	destroy: function() {
 		this.model.get("pointsCollection").off("add change:latLng remove");

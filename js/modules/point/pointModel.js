@@ -86,15 +86,25 @@ Mapper.point = Mapper.baseMapObject.extend({
 			return;
 		}
 
-		this.confirmDestroy();
+		this.confirmDelete();
 	},
-	confirmDestroy: function () {
+	confirmDelete: function () {
 		if ( confirm("Are you sure you want to delete this marker") ) {
-			this.destroy();
+			this.delete();
+		}
+	},
+	delete: function () {
+		if ( this.get('single') ) {
+			Mapper.actions.addAction(new Mapper.deleteItemAction({
+				'target': this,
+				'parentCollection': this.get('_parentCollection')
+			}));
+		} else {
+			this.triggerPointDeleteParent();
 		}
 	},
 	startDragging: function () {
-		if (this.get('single')) {
+		if ( this.get('single') ) {
     		this.set('jsonStateBefore', this.toJSON());
     	} else {
     		this.triggerParentPointDragStart();
@@ -103,7 +113,7 @@ Mapper.point = Mapper.baseMapObject.extend({
 	stopDragging: function (latLng) {
 		this.set("latLng", latLng);
 
-    	if (this.get('single')) {
+    	if ( this.get('single') ) {
     		Mapper.actions.addAction(new Mapper.changeItemStateAction({
 	    		'target': this,
 	    		'jsonStateBefore': this.get('jsonStateBefore'),
@@ -126,10 +136,14 @@ Mapper.point = Mapper.baseMapObject.extend({
     		changed: true
     	});
 	},
+	triggerPointDeleteParent: function () {
+		this.triggerEventParent("pointDelete", {
+    		model: this,
+    		changed: true
+    	});
+	},
 	triggerEventParent: function(eventName, param) {
-		if (this.get("_parentCollection")) {
-			this.get("_parentCollection").trigger(eventName, param);
-		}
+		this.get("_parentCollection").trigger(eventName, param);
 	},
 	toJSON: function() {
 		var properties = _.clone(this.attributes);

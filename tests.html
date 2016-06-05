@@ -1,3 +1,4 @@
+<!doctype html>
 <html>
     <head>
         <title>Mapper Tests</title>
@@ -29,8 +30,12 @@
         <script type="text/javascript" src="js/custom-libs/mapTyler.js"></script>
         <script type="text/javascript" src="js/custom-libs/bleGps.js"></script>
 
+        <!-- Collections -->
+        <script type="text/javascript" src="js/modules/collections/baseCollection.js"></script>
+        <script type="text/javascript" src="js/modules/collections/deletedItemsCollection.js"></script>
+        <script type="text/javascript" src="js/modules/collections/pointsCollection.js"></script>
+
         <!-- Layers -->
-        <script type="text/javascript" src="js/modules/layers/pointsCollection.js"></script>
         <script type="text/javascript" src="js/modules/layers/polyLayer.js"></script>
         <script type="text/javascript" src="js/modules/layers/pointsLayer.js"></script>
         
@@ -40,7 +45,7 @@
 
         <!-- Map objects models -->
         <script type="text/javascript" src="js/modules/map/mapModel.js"></script>
-        <script type="text/javascript" src="js/modules/map/baseMapObjectModel.js"></script>
+        <script type="text/javascript" src="js/modules/baseMapObject/baseMapObjectModel.js"></script>
         <script type="text/javascript" src="js/modules/point/pointModel.js"></script>
         <script type="text/javascript" src="js/modules/poly/polyModel.js"></script>
         <script type="text/javascript" src="js/modules/polygon/polygonModel.js"></script>
@@ -63,14 +68,16 @@
         <script type="text/javascript" src="js/ui-views/controls/colorControlView.js"></script>
         <script type="text/javascript" src="js/ui-views/controls/labelControlView.js"></script>
 
-        <!-- Main Controllers -->
-        <script type="text/javascript" src="js/modules/main/actions.js"></script>
+        <!-- Main Controllers/Models -->
+        <script type="text/javascript" src="js/modules/main/actionsModel.js"></script>
         <script type="text/javascript" src="js/modules/main/uiController.js"></script>
         <script type="text/javascript" src="js/modules/main/mapController.js"></script>
 
         <!-- Actions -->
         <script type="text/javascript" src="js/modules/actions/baseAction.js"></script>
         <script type="text/javascript" src="js/modules/actions/changeItemStateAction.js"></script>
+        <script type="text/javascript" src="js/modules/actions/addItemAction.js"></script>
+        <script type="text/javascript" src="js/modules/actions/deleteItemAction.js"></script>
         
         <script type="text/javascript" src="js/bootstrap.js"></script>
 
@@ -83,8 +90,6 @@
                 (window.mochaPhantomJS || mocha).run();
             };
         </script>
-
-        <script type="text/javascript" src="js/bootstrap.js"></script>
 
         <!-- Stub functions -->
         <script type="text/javascript" src="tests/stubFunctions.js"></script>

@@ -6,9 +6,9 @@ Utils.configStyles = {
 		defaultIcon: {
 			path: google.maps.SymbolPath.CIRCLE,
 			scale: 7,
-			strokeWeight: 1,
+			strokeWeight: 0,
 			fillColor: "#ffffff",
-			fillOpacity: 0.6
+			fillOpacity: 0.9
 	    },
 		selectedIcon: {
 			path: "M -2,-2 2,2 M 2,-2 -2,2",
@@ -38,7 +38,7 @@ Utils.configStyles = {
 			scale: 7,
 			strokeWeight: 0,
 			fillColor: "#84EC71",
-			fillOpacity: 0.5
+			fillOpacity: 0.9
 		}
 	},
 	mapColors: {

@@ -41,6 +41,10 @@ Mapper.poly = Mapper.baseMapObject.extend({
 			self.setStartEndPoints();
 		});
 
+		this.get("pointsCollection").on("pointDelete", function(ev) {
+			self.pointDelete(ev);
+		});
+
 		this.get("pointsCollection").on("pointDragStart", function(ev) {
 			self.pointDragStart();
 		});
@@ -169,6 +173,18 @@ Mapper.poly = Mapper.baseMapObject.extend({
     		'refreshPosition': true
     	}));
 	},
+	pointDelete: function (ev) {
+		this.set('polyJSONBefore', this.toJSON());
+		
+		ev.model.destroy();
+
+		Mapper.actions.addAction(new Mapper.changeItemStateAction({
+    		'target': this,
+    		'jsonStateBefore': this.get('polyJSONBefore'),
+    		'jsonStateAfter': this.toJSON(),
+    		'refreshPosition': true
+    	}));
+	},
 	insertHelperPoints: function(pointModel) {
 		var collection = this.get("pointsCollection"),
 			index = collection.indexOf(pointModel);
@@ -219,6 +235,12 @@ Mapper.poly = Mapper.baseMapObject.extend({
 			'jsonStateBefore': jsonStateBefore,
 			'jsonStateAfter': this.toJSON(),
 			'refreshPosition': false
+		}));
+	},
+	delete: function () {
+		Mapper.actions.addAction(new Mapper.deleteItemAction({
+			'target': this,
+			'parentCollection': this.get('_parentCollection')
 		}));
 	},
 	toJSON: function() {
