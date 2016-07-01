@@ -132,7 +132,8 @@ describe("Test point model", function () {
 		});
 
 		it('should delete poly-point on confirmation', function () {
-			var windowConfirm = confirm,
+			var parentCollection = stubCreatePointsCollection(3),
+				windowConfirm = confirm,
 				confirmYes = function () {
 					return true;
 				},
@@ -147,6 +148,8 @@ describe("Test point model", function () {
 					single: false,
 					isSelected: false
 				});
+
+			parentCollection.add(p, p2);
 
 			// Case 1, deletion is confirmed
 			sandbox.spy(p, 'delete');

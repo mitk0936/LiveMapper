@@ -6,3 +6,6 @@ intelxdk.*
 plugins/*
 xdk/*
 xdk-publish-meta-data.json
+node_modules/*
+.tern-defs/cordova-plugin-device.json
+src/*

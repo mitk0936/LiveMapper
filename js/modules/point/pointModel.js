@@ -100,7 +100,7 @@ Mapper.point = Mapper.baseMapObject.extend({
 				'parentCollection': this.get('_parentCollection')
 			}));
 		} else {
-			this.triggerPointDeleteParent();
+			this.triggerParentPointDelete();
 		}
 	},
 	startDragging: function () {
@@ -136,7 +136,7 @@ Mapper.point = Mapper.baseMapObject.extend({
     		changed: true
     	});
 	},
-	triggerPointDeleteParent: function () {
+	triggerParentPointDelete: function () {
 		this.triggerEventParent("pointDelete", {
     		model: this,
     		changed: true

@@ -1,3 +1,4 @@
+"use strict";
 this.Mapper = this.Mapper || {};
 
 Mapper.colorControl = Mapper.controlView.extend({

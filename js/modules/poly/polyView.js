@@ -24,7 +24,7 @@ Mapper.polyView = Backbone.View.extend({
 	initHandlers: function() {
 		var self = this;
 
-		this.model.get("pointsCollection").on("add change:latLng remove", function(e) {
+		this.model.get("pointsCollection").on("add pointDragStop refresh remove", function(e) {
 			self.render();
 		});
 
@@ -55,8 +55,17 @@ Mapper.polyView = Backbone.View.extend({
 	initMapHandlers: function() {
 		var self = this;
 
+		var timeout = window.setTimeout,
+			fakeTimeout = function (cb, timer) {
+				cb();
+			};
+
 		this.mapObject.addListener('mousedown', function(event) {
+			// fake timeout, to avoid performance issue with selecting multiple markers in google maps lib
+			window.setTimeout = fakeTimeout;
 			self.model.select();
+			// restore the setTimeout function
+			window.setTimeout = timeout;
 		});
 	},
 	togglePoints: function(stateVisible) {

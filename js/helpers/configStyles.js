@@ -28,7 +28,6 @@ Utils.configStyles = {
 			path: google.maps.SymbolPath.CIRCLE,
 			scale: 7,
 			strokeWeight: 4,
-			strokeColor: "#333",
 			fillColor: "#fff",
 			strokeColor: "#FF3333",
 			fillOpacity: 0.9

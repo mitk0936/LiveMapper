@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 this.Mapper = this.Mapper || {};
 
 Mapper.poly = Mapper.baseMapObject.extend({

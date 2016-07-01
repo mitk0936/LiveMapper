@@ -1,0 +1,19 @@
+{
+  "name": "Mapper",
+  "version": "0.3.0",
+  "description": "Mobile application for cartography",
+  "scripts": {
+    "run": "gulp run"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-minify": "^0.0.12",
+    "del": "^2.2.0",
+    "live-server": "^1.0.0",
+    "path": "^0.12.7",
+    "run-sequence": "^1.2.1",
+    "stream-combiner2": "^1.1.1"
+  },
+  "scripts": {},
+  "author": "Dimitar Mihaylov"
+}
