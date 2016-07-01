@@ -14,16 +14,22 @@ Utils.loadScript = function (src, callback) {
 	//the url of the needed jquery
 	script.src = src;
 	script.onload = script.onreadystatechange = function() { 
-	  var rs = this.readyState; 
-	  if (rs) {
-	    if ((rs != 'complete') && (rs != 'loaded')) {
-	    	throw 'Some error with loading: ' + src;
-	    	return;
-	    }
-	  }
+		var rs = this.readyState; 
+		if (rs) {
+			if ((rs != 'complete') && (rs != 'loaded')) {
+				throw 'Some error with loading: ' + src;
+				return;
+			}
+		}
 
-	  callback();
+		callback();
 	}
 	//append the script into the document head
 	document.getElementsByTagName('head')[0].appendChild(script);
 }
+
+Utils.originalSetTimeout = window.setTimeout;
+
+Utils.fakeTimeout = function (cb, timer) {
+	cb();
+};

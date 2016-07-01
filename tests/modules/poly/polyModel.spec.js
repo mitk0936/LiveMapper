@@ -355,4 +355,107 @@ describe("Test poly model", function () {
 			expect(poly.get('pointsCollection').length).to.equal(1);
 		});
 	});
+
+	describe('Testing get/set FillColor', function () {
+		it('should set properly the fillColor and get it after that', function () {
+			var initialPointsCount = 3,
+				initialPointsCollection = stubCreatePointsCollection(initialPointsCount),
+				poly = new Mapper.poly({
+					pointsCollectionJSON: initialPointsCollection.toJSON()
+				});
+
+			var initialFillColor = poly.getFillColor();
+
+			expect(initialFillColor).to.deep.equal({
+				'colorHex': poly.get('fillColor')
+			});
+
+			var newHex = Utils.configStyles.mapColors['green-60'];
+
+			sandbox.spy(poly, 'toJSON');
+			sandbox.spy(poly, 'set');
+			sandbox.spy(Mapper.actions, 'addAction');
+
+			var controlData = {
+				'colorHex': newHex
+			};
+
+			poly.setFillColor(controlData);
+
+			expect(poly.toJSON).to.be.called;
+			expect(poly.set.withArgs('fillColor', controlData.colorHex)).to.be.called.once;
+			expect(Mapper.actions.addAction).to.be.called.once;
+
+			expect(poly.getFillColor()).to.deep.equal({
+				'colorHex': newHex
+			});
+		});
+	});
+
+	describe('Testing get/set label of poly', function () {
+		it('should set properly the label and get it after that', function () {
+			var initialPointsCount = 3,
+				initialPointsCollection = stubCreatePointsCollection(initialPointsCount),
+				poly = new Mapper.poly({
+					pointsCollectionJSON: initialPointsCollection.toJSON()
+				});
+
+			var initialFillColor = poly.getLabel();
+
+			expect(initialFillColor).to.deep.equal({
+				'label': poly.get('label')
+			});
+
+			var newLabel = "Testing poly";
+
+			sandbox.spy(poly, 'toJSON');
+			sandbox.spy(poly, 'set');
+			sandbox.spy(Mapper.actions, 'addAction');
+
+			var controlData = {
+				'label': newLabel
+			};
+
+			poly.setLabel(controlData);
+
+			expect(poly.toJSON).to.be.called;
+			expect(poly.set.withArgs('label', controlData.label)).to.be.called.once;
+			expect(Mapper.actions.addAction).to.be.called.once;
+
+			expect(poly.getLabel()).to.deep.equal({
+				'label': newLabel
+			});
+		});
+	});
+
+	describe('Testing poly.toJSON method', function () {
+		it('should store the right values in the toJSON object', function () {
+			var poly = new Mapper.poly(),
+				polyTestObject = {
+					type: Utils.CONFIG.polyType.polyline,
+					label: 'test polyline',
+					fillColor: Utils.configStyles.mapColors['green-60'],
+					unknownProp: 'Should not be included in the toJSON object'
+				},
+				newPolyName = 'Gosho';
+
+			poly.addPoint(new Mapper.point());
+			
+			poly.setLabel({
+				'label': newPolyName
+			});
+
+			poly.setFillColor({
+				'colorHex': Utils.configStyles.mapColors['yellow-50']
+			});
+
+			expect(poly.toJSON()).to.deep.equal({
+				type: Utils.CONFIG.polyType.polyline,
+				pointsCollectionJSON: poly.get('pointsCollection').toJSON(),
+				fillColor: poly.get('fillColor'),
+				label: poly.get('label')
+			});
+
+		});
+	});
 });

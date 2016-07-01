@@ -48,8 +48,8 @@ var uiController = function () {
 			isVisible && controlContent.trigger('openned');
 		});
 
-		// close panels on window resize/orientationchange
-		$(window).on('resize orientationchange', function onWindowResize() {
+		// close panels on window orientationchange
+		$(window).on('orientationchange', function onWindowResize() {
 			$.each(uiComponents['panels'], function forEachPanel(name, panel) {
 				panel && panel.close();
 			});

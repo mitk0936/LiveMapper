@@ -55,21 +55,16 @@ Mapper.polyView = Backbone.View.extend({
 	initMapHandlers: function() {
 		var self = this;
 
-		var timeout = window.setTimeout,
-			fakeTimeout = function (cb, timer) {
-				cb();
-			};
-
 		this.mapObject.addListener('mousedown', function(event) {
 			// fake timeout, to avoid performance issue with selecting multiple markers in google maps lib
-			window.setTimeout = fakeTimeout;
+			window.setTimeout = Utils.fakeTimeout;
 			self.model.select();
 			// restore the setTimeout function
-			window.setTimeout = timeout;
+			window.setTimeout = Utils.originalSetTimeout;
 		});
 	},
 	togglePoints: function(stateVisible) {
-		if (stateVisible) {
+		if ( stateVisible ) {
 			this.model.get('pointsCollection').showAll();
 		} else {
 			this.model.get('pointsCollection').hideAll();

@@ -224,8 +224,6 @@ Mapper.poly = Mapper.baseMapObject.extend({
 		}
 	},
 	setFillColor: function (controlData) {
-		// todo: check if the fill color changed
-		// before adding new action
 		var jsonStateBefore = this.toJSON();
 		
 		this.set('fillColor', controlData.colorHex);
