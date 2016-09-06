@@ -17,7 +17,7 @@ Mapper.polygonView = Mapper.polyView.extend({
 			fillColor: self.model.get("fillColor")
 		});
 
-		Mapper.mapController.appendToMap(this.mapObject);
+		this.model.get('map').get('mapView').appendToMap(this.mapObject);
 		this.initMapHandlers();
 	},
 	setFillColor: function (ev) {

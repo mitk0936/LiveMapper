@@ -8,7 +8,7 @@ this.Mapper = this.Mapper || {};
         document.addEventListener("deviceready", onDeviceReady, false);
 
         setTimeout(function () {
-            // device ready for running app in mobile browser
+           // device ready for running app in mobile browser
             !devicereadyFired && $(document).ready(onDeviceReady);
         }, 5000);
 
@@ -25,8 +25,5 @@ this.Mapper = this.Mapper || {};
 
         Mapper.mapController.init();
     };
-
-    window.onerror = function (error) {
-        alert(error)
-    }
+    
 })();

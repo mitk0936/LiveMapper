@@ -2,7 +2,14 @@
 this.Mapper = this.Mapper || {};
 
 Mapper.pointsCollection = Mapper.baseCollection.extend({
-	initialize: function() {
+	initialize: function (models, args) {
+	
+		if ( !args || !(args.map instanceof Mapper.Map) ) {
+			throw "Point layers must receive a reference to the parent map";
+		}
+
+		this.map = args.map;
+
 		// used to hide/show, the whole points layer at once
 		this.pointsViewLayer = new google.maps.MVCObject();
 		this.initHandlers();
@@ -20,7 +27,7 @@ Mapper.pointsCollection = Mapper.baseCollection.extend({
 		marker.unbind('map');
 	},
 	showAll: function () {
-		Mapper.mapController.bindToMap('points', this.pointsViewLayer);
+		this.map.get('mapView').bindToMap('points', this.pointsViewLayer);
 	},
 	hideAll: function () {
 		this.pointsViewLayer.set('points', null);

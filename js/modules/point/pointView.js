@@ -21,7 +21,7 @@ Mapper.pointView = Backbone.View.extend({
 	        icon : self.model.get('icon') || Utils.configStyles.icons['defaultIcon']
 	    });
 
-	    Mapper.mapController.appendToMap(this.mapMarker);
+	    this.model.get('map').get('mapView').appendToMap(this.mapMarker);
 
 		this.initMapHandlers();
 	},
@@ -103,7 +103,7 @@ Mapper.pointView = Backbone.View.extend({
 	},
 	destroyMapMarker: function() {
 		// unbind map property, because it is binded to the pointsCollection layer
-		if (this.mapMarker) {
+		if ( this.mapMarker ) {
 			this.unbindFromParentCollectionMap();
 			this.mapMarker = null;
 		}

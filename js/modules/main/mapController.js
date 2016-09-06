@@ -2,33 +2,25 @@
 
 var mapController = function() {
 
-	var currentMap,
-		currentState =  "point",
-		mapDomId = "map",
-		defaultZoom = 14,
-		mainContainer = null,
-		mapCanvas;
+	var mapModel;
 
 	function init() {
-		currentMap = new Mapper.Map();
+		mapModel = new Mapper.Map();
+		
+		new Mapper.statesView({ model: mapModel });
 		Mapper.uiController.init();
+
+		new Mapper.editDeleteView({
+			model: mapModel,
+			stylePanel: Mapper.uiController.panels.stylePanel
+		});
 
 		return this;
 	}
 
-	function selectCurrent (selection) {
-		if (currentMap.get('currentSelection') !== selection) {
-			currentMap.selectCurrent(selection);
-		}
-	}
-
-	function appendToMap (object) {
-		object.setMap(mapCanvas);
-	}
-
 	function clearMap (map) {
 		Mapper.actions.clearActions();
-		currentMap.clearSelection();
+		mapModel.deselectCurrentItem();
 
 		map.get("pointsLayer").destroy();
 		map.get("polylinesLayer").destroy();
@@ -37,9 +29,9 @@ var mapController = function() {
 
 	function createMapFromJSON (mapData) {
 		// TODO -> add validations for json
-		clearMap(currentMap);
+		clearMap(mapModel);
 
-		currentMap.set({
+		mapModel.set({
 			centerLat: mapData.centerLat,
 			centerLng: mapData.centerLng
 		});
@@ -49,7 +41,7 @@ var mapController = function() {
 		createPolyLayerFromJSON(mapData.polylinesLayer);
 		createPolyLayerFromJSON(mapData.polygonsLayer);
 
-		currentMap.clearSelection();
+		mapModel.deselectCurrentItem();
 	}
 
 	function createPolyLayerFromJSON (polyLayer) {
@@ -66,11 +58,11 @@ var mapController = function() {
 			case Utils.CONFIG.polyType['polygon']:
 				poly = new Mapper.polygon(polyData);
 
-				currentMap.get('polygonsLayer').add(poly);
+				mapModel.get('polygonsLayer').add(poly);
 				break;
 			default:
 				poly = new Mapper.poly(polyData);
-				currentMap.get('polylinesLayer').add(poly);
+				mapModel.get('polylinesLayer').add(poly);
 				break;
 		}
 
@@ -91,7 +83,7 @@ var mapController = function() {
 	function createPointFromJSON (point) {
 		// TODO -> add validations for json
 		var p = new Mapper.point(point);
-		currentMap.get("pointsLayer").add(p);
+		mapModel.get("pointsLayer").add(p);
 		return p;
 	}
 
@@ -124,33 +116,33 @@ var mapController = function() {
 		var mapMinZoom = 13;
 		var mapMaxZoom = 19;
 		var maptiler = new google.maps.ImageMapType({
-		    getTileUrl: function(coord, zoom) { 
-		        var proj = mapCanvas.getProjection();
-		        var z2 = Math.pow(2, zoom);
-		        var tileXSize = 256 / z2;
-		        var tileYSize = 256 / z2;
-		        var tileBounds = new google.maps.LatLngBounds(
-		            proj.fromPointToLatLng(new google.maps.Point(coord.x * tileXSize, (coord.y + 1) * tileYSize)),
-		            proj.fromPointToLatLng(new google.maps.Point((coord.x + 1) * tileXSize, coord.y * tileYSize))
-		        );
-		        var y = coord.y;
-		        var x = coord.x >= 0 ? coord.x : z2 + coord.x
-		        if (mapBounds.intersects(tileBounds) && (mapMinZoom <= zoom) && (zoom <= mapMaxZoom))
-		            return "http://dmwebs.org/maps/zapaden_park/" + zoom + "/" + x + "/" + y + ".png";
-		        else
-		            return "http://www.maptiler.org/img/none.png";
-		    },
-		    tileSize: new google.maps.Size(256, 256),
-		    isPng: true,
-
-		    opacity: 1.0
+			getTileUrl: function(coord, zoom) { 
+				var proj = mapCanvas.getProjection();
+				var z2 = Math.pow(2, zoom);
+				var tileXSize = 256 / z2;
+				var tileYSize = 256 / z2;
+				var tileBounds = new google.maps.LatLngBounds(
+					proj.fromPointToLatLng(new google.maps.Point(coord.x * tileXSize, (coord.y + 1) * tileYSize)),
+					proj.fromPointToLatLng(new google.maps.Point((coord.x + 1) * tileXSize, coord.y * tileYSize))
+				);
+				var y = coord.y;
+				var x = coord.x >= 0 ? coord.x : z2 + coord.x
+				if (mapBounds.intersects(tileBounds) && (mapMinZoom <= zoom) && (zoom <= mapMaxZoom)) {
+					return "http://dmwebs.org/maps/zapaden_park/" + zoom + "/" + x + "/" + y + ".png";
+				} else {
+					return "http://www.maptiler.org/img/none.png";
+				}
+			},
+			tileSize: new google.maps.Size(256, 256),
+			isPng: true,
+			opacity: 1.0
 		});
 		
 
 		var opts = {
-	        streetViewControl: false,
-	        center: new google.maps.LatLng(42.651377, 23.239742),
-	        zoom: 14
+			streetViewControl: false,
+			center: new google.maps.LatLng(42.651377, 23.239742),
+			zoom: 14
 	    };
 
 		mapCanvas.setZoom(14);
@@ -158,45 +150,19 @@ var mapController = function() {
 		mapCanvas.overlayMapTypes.insertAt(0, maptiler);
 	}
 
-	function setMapCanvas (map) {
-		mapCanvas = map;
-	}
-
-	function getMapCanvas() {
-		return mapCanvas;
-	}
-
-	function bindToMap (propName, object) {
-		object.set(propName, mapCanvas);
-	}
-
-	function setMapCenter (latLng) {
-		mapCanvas.panTo(latLng);
-	}
-
-
 	return {
 		// public methods
 		init: init,
-		currentState: currentState,
-		mapDomId: mapDomId,
-		defaultZoom: defaultZoom,
-		initLayers: initLayers,
 		createPointsLayerFromJSON: createPointsLayerFromJSON,
 		createPointFromJSON: createPointFromJSON,
 		createPolyLayerFromJSON: createPolyLayerFromJSON,
 		createPolyFromJSON: createPolyFromJSON,
 		createMapFromJSON: createMapFromJSON,
 		createMapObjectFromJSON: createMapObjectFromJSON,
-		clearMap: clearMap,
-		selectCurrent: selectCurrent,
-		appendToMap: appendToMap,
-		bindToMap: bindToMap,
-		setMapCenter: setMapCenter,
-		setMapCanvas: setMapCanvas,
-		getMapCanvas: getMapCanvas,
-		getCurrentMap: function() {
-			return currentMap;
+		getMap: function () {
+			// only for testing purposes,
+			// to be used in the browser console for testing
+			return mapModel;
 		}
 	}
 };

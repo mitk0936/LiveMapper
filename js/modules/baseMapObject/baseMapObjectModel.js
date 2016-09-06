@@ -3,6 +3,11 @@ this.Mapper = this.Mapper || {};
 
 // should not be instatiated directly
 Mapper.baseMapObject = Backbone.Model.extend({
+	initialize: function () {
+		if ( !(this.get("map") instanceof Mapper.Map) ) {
+			throw "Every map object must receive a reference to the parent map";
+		}
+	},
 	getLabel: function () {
 		return {
 			'label': this.get('label')

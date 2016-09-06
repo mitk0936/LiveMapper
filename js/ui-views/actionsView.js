@@ -15,7 +15,7 @@ Mapper.actionsView = Backbone.View.extend({
             var compileTemplate = _.template(template);
 			var html = $(compileTemplate(self.config));
 
-            Mapper.uiController.getMainContainer().append(html); 
+            $("#main-container").append(html); 
 
            	self.el = $("#actions");
 			self.initHandlers();

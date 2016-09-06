@@ -18,7 +18,7 @@ Mapper.polyView = Backbone.View.extend({
 			strokeWeight: 4
 		});
 
-		Mapper.mapController.appendToMap(this.mapObject);
+		this.model.get('map').get('mapView').appendToMap(this.mapObject);
 		this.initMapHandlers();
 	},
 	initHandlers: function() {

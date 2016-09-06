@@ -2,55 +2,56 @@
 this.Mapper = this.Mapper || {};
 
 Mapper.editDeleteView = Backbone.View.extend({
-	initialize: function() {
+	initialize: function(options) {
 		var self = this;
-        
-        $.get('templates/edit-tabs.html', function onTemplateLoaded(template) {
-            var html = $(template);
 
-            Mapper.uiController.getMainContainer().append(html);
+		this.stylePanel = options.stylePanel;
+		
+		$.get('templates/edit-tabs.html', function onTemplateLoaded (template) {
+			var html = $(template);
 
-            self.container = $("#edit-options");
-            self.editBtn = self.container.find("a#edit-btn");
-           	self.deleteBtn = self.container.find("a#delete-btn");
+			$("body").append(html);
 
-           	self.buttons = self.container.find("a");
-			
+			self.container = $("#edit-options");
+			self.editBtn = self.container.find("a#edit-btn");
+				self.deleteBtn = self.container.find("a#delete-btn");
+
+				self.buttons = self.container.find("a");
+
 			self.initHandlers();
 			self.updateVisibility();
-        }, 'html');	
+		}, 'html');	
 	},
 	initHandlers: function() {
 		var self = this;
 
-		Mapper.mapController.getCurrentMap().on("change:currentSelection", function() {
+		this.model.on("change:currentSelection", function() {
 			self.updateVisibility();
 		});
 
-		Mapper.mapController.getCurrentMap().on("destroy", function () {
+		this.model.on("destroy", function () {
 			self.destroy();
 		});
 	},
 	updateVisibility: function() {
-		var map = Mapper.mapController.getCurrentMap();
-
-		if (map.get("currentSelection")) {
+		if ( this.model.get("currentSelection") ) {
 			this.container.show();
 
+			var self = this;
 			this.buttons.off("click").on("click", function(e) {
 				
 				var action = $(e.target).attr('data-action');
 
 				switch (action) {
 					case "confirm":
-						Mapper.mapController.getCurrentMap().clearSelection();
+						self.model.deselectCurrentItem();
 						// save to local storage
 						break;
 					case "edit":
-						Mapper.uiController.panels['stylePanel'].open(map.get("currentSelection"));
+						self.stylePanel.open(self.model.get("currentSelection"));
 						break;
 					case "delete":
-						map.deleteItem(map.get("currentSelection"));
+						self.model.deleteItem(self.model.get("currentSelection"));
 						break;
 				}
 			});
@@ -59,6 +60,6 @@ Mapper.editDeleteView = Backbone.View.extend({
 		}
 	},
 	destroy: function () {
-
+		this.container.remove();
 	}
 });

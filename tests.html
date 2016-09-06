@@ -21,9 +21,19 @@
         <!-- Test Setup -->
         <script>
             var expect = chai.expect;
-            mocha.setup("bdd");
+
+            mocha.setup({
+                ui: 'bdd',
+                ignoreLeaks: true
+            });
 
             window.onload = function () {
+                mockedMap = new Mapper.Map();
+
+                Mapper.actions = new actionsModel();
+                Mapper.mapController = new mapController();
+                Mapper.uiController = new uiController();
+
                 (window.mochaPhantomJS || mocha).run();
             };
         </script>
@@ -38,7 +48,9 @@
     </head>
     <body>
         <div id="mocha"></div>
-
+        <div data-role="page" id="page-container" style="display:none">
+            <div data-role="content" id="main-container"></div>
+        </div>
         <!-- Test Fixtures. -->
         <div id="fixtures" style="display: none; visibility: hidden;"></div>
     </body>

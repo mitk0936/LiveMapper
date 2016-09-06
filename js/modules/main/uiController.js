@@ -1,20 +1,13 @@
 'use strict';
 
 var uiController = function () {
-	var mainContainer,
-		pageContainer,
-		controlWrapper,
-		uiComponents = {
+	var uiComponents = {
 			'panels': {
 				'stylePanel': null
 			},
 			'controls': {
 				'colorControl': null,
 				'labelControl': null
-			},
-			'views': {
-				'editDeleteView': null,
-				'statesView': null
 			}
 		}
 
@@ -56,36 +49,9 @@ var uiController = function () {
 		});
 	};
 
-	var loadControlWrapper = function (onLoaded) {
-		if (!controlWrapper) {
-
-			$.get('templates/controls/control-wrapper.html', function onTemplateLoaded(template) {
-	        	controlWrapper = template;
-	        	onLoaded(controlWrapper);
-	        }, 'html');
-
-		} else {
-			onLoaded(controlWrapper);
-		}
-	};
-
-	var togglePanel = function(panelName) {
-		uiComponents['panels'][panelName] && uiComponents['panels'][panelName].toggle();
-	};
-
 	return {
 		init: init,
-		togglePanel: togglePanel,
 		panels: uiComponents['panels'],
-		controls: uiComponents['controls'],
-		loadControlWrapper: loadControlWrapper,
-		getMainContainer: function() {
-			mainContainer = mainContainer || $("#main-container")
-			return mainContainer;
-		},
-		getPageContainer: function() {
-			pageContainer = pageContainer || $("#page-container")
-			return pageContainer;
-		},
+		controls: uiComponents['controls']
 	}
 };

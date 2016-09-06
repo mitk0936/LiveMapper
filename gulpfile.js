@@ -1,24 +1,26 @@
 var src = [
-		'js/lib/jquery.js',
-		'js/lib/underscore.js',
-		'js/lib/backbone.js',
-		'js/lib/jquery-mobile.js',
-		'js/modules/actions/baseAction.js',
-		'js/ui-views/panels/panelView.js',
-		'js/ui-views/controls/controlView.js',
-		'js/modules/*.js',
-		'js/*.js',
-		'js/*/*.js',
-		'js/*/*.js',
-		'js/*/*/*.js'
-	],
-	path = ['js/*.js', 'js/*/*.js', 'js/*/*.js', 'js/*/*/*.js'],
-	gulp = require('gulp'),
-	minify = require('gulp-minify'),
-	concat = require('gulp-concat'),
-	del = require('del'),
-	combiner = require('stream-combiner2'),
-	runSeq = require('run-sequence');
+	'js/lib/jquery.js',
+	'js/lib/underscore.js',
+	'js/lib/backbone.js',
+	'js/lib/jquery-mobile.js',
+	'js/modules/actions/baseAction.js',
+	'js/modules/collections/baseCollection.js',
+	'js/modules/collections/pointsCollection.js',
+	'js/ui-views/panels/panelView.js',
+	'js/ui-views/controls/controlView.js',
+	'js/modules/*.js',
+	'js/*.js',
+	'js/*/*.js',
+	'js/*/*.js',
+	'js/*/*/*.js'
+],
+path = ['js/*.js', 'js/*/*.js', 'js/*/*.js', 'js/*/*/*.js'],
+gulp = require('gulp'),
+minify = require('gulp-minify'),
+concat = require('gulp-concat'),
+del = require('del'),
+combiner = require('stream-combiner2'),
+runSeq = require('run-sequence');
 
 gulp.task('clean', function() {
 	return del(['src']);

@@ -10,7 +10,9 @@ describe("Test point model", function () {
 	});
 
 	it("should create new point. with default values", function () {
-		var p = new Mapper.point();
+		var p = new Mapper.point({
+			map: mockedMap
+		});
 
 		expect(p.get('lat')).to.be.defined;
 		expect(p.get('lng')).to.be.defined;
@@ -19,7 +21,9 @@ describe("Test point model", function () {
 
 	it('should set icon properly', function () {
 		var newIcons = Utils.configStyles.icons['selectedIcon'],
-			p = new Mapper.point(),
+			p = new Mapper.point({
+				map: mockedMap
+			}),
 			callbacks = {
 				changeIconCallback: function () {}
 			};
@@ -37,7 +41,9 @@ describe("Test point model", function () {
 	});
 
 	it('should properly refresh point type and icon of start/end points', function () {
-		var p = new Mapper.point();
+		var p = new Mapper.point({
+			map: mockedMap
+		});
 		// Case 1
 		p.set({
 			isStartPoint: false,
@@ -68,6 +74,7 @@ describe("Test point model", function () {
 	it('should set proper icon, depending on the point type', function () {
 		var points = {
 			'startPoint': new Mapper.point({
+				map: mockedMap,
 				isStartPoint: true,
 				isEndPoint: true,
 				isHelper: false,
@@ -75,6 +82,7 @@ describe("Test point model", function () {
 				single: false
 			}),
 			'endPoint': new Mapper.point({
+				map: mockedMap,
 				isStartPoint: false,
 				isEndPoint: true,
 				isHelper: true,
@@ -82,6 +90,7 @@ describe("Test point model", function () {
 				single: false
 			}),
 			'helperPoint': new Mapper.point({
+				map: mockedMap,
 				isStartPoint: false,
 				isEndPoint: false,
 				isHelper: true,
@@ -89,6 +98,7 @@ describe("Test point model", function () {
 				single: false
 			}),
 			'selectedPoint': new Mapper.point({
+				map: mockedMap,
 				isStartPoint: false,
 				isEndPoint: false,
 				isHelper: false,
@@ -96,6 +106,7 @@ describe("Test point model", function () {
 				single: true
 			}),
 			'normalPoint': new Mapper.point({
+				map: mockedMap,
 				isStartPoint: false,
 				isEndPoint: false,
 				isHelper: false,
@@ -120,15 +131,16 @@ describe("Test point model", function () {
 	describe('testing the user interaction with points', function () {
 		it('should select single point when clicked', function () {
 			var p = new Mapper.point({
+				map: mockedMap,
 				single: true,
 				isSelected: false
 			});
 
-			sandbox.spy(Mapper.mapController, 'selectCurrent');
+			sandbox.spy(p.get('map'), 'selectItem');
 			
 			p.select();
 
-			expect(Mapper.mapController.selectCurrent.withArgs(p)).to.be.called.once;
+			expect(p.get('map').selectItem.withArgs(p)).to.be.called.once;
 		});
 
 		it('should delete poly-point on confirmation', function () {
@@ -141,10 +153,12 @@ describe("Test point model", function () {
 					return false;
 				},
 				p = new Mapper.point({
+					map: mockedMap,
 					single: false,
 					isSelected: false
 				}),
 				p2 = new Mapper.point({
+					map: mockedMap,
 					single: false,
 					isSelected: false
 				});
@@ -171,6 +185,7 @@ describe("Test point model", function () {
 	describe('testing the drag functionality, actions, triggering parent collection events', function () {
 		it('should save jsonState on start dragging single point', function () {
 			var p = new Mapper.point({
+				map: mockedMap,
 				single: true
 			});
 
@@ -181,8 +196,12 @@ describe("Test point model", function () {
 		});
 
 		it('should trigger events to parent collection on startDragging, if point is not single', function () {
-			var poly = new Mapper.poly(),
-				p = new Mapper.point();
+			var poly = new Mapper.poly({
+				map: mockedMap
+			}),
+			p = new Mapper.point({
+				map: mockedMap
+			});
 
 			poly.addPoint(p);
 
@@ -206,8 +225,12 @@ describe("Test point model", function () {
 		});
 
 		it('it should create action on point stopDragging, if it is a single point', function () {
-			var p = new Mapper.point(),
-				layer = new Mapper.pointsLayer();
+			var p = new Mapper.point({
+				map: mockedMap
+			}),
+			layer = new Mapper.pointsLayer({}, {
+				map: mockedMap
+			});
 
 			layer.add(p); // single point
 
@@ -227,8 +250,12 @@ describe("Test point model", function () {
 		});
 
 		it('should properly trigger events to parent collection on stopDragging, if point is not single', function () {
-			var poly = new Mapper.poly(),
-				p = new Mapper.point();
+			var poly = new Mapper.poly({
+				map: mockedMap
+			}),
+			p = new Mapper.point({
+				map: mockedMap
+			});
 
 			poly.addPoint(p);
 			p.set({
@@ -255,16 +282,18 @@ describe("Test point model", function () {
 	
 	describe('Testing point.toJSON method', function () {
 		it('should store the right values in the toJSON object', function () {
-			var p = new Mapper.point(),
-				pointTestObject = {
-					type: Utils.CONFIG.pointType,
-					lat: 42.1235355,
-					lng: 23.12342834,
-					single: true,
-					isHelper: false,
-					label: 'test point',
-					unknownProp: 'Should not be included in the toJSON object'
-				};
+			var p = new Mapper.point({
+				map: mockedMap,
+			}),
+			pointTestObject = {
+				type: Utils.CONFIG.pointType,
+				lat: 42.1235355,
+				lng: 23.12342834,
+				single: true,
+				isHelper: false,
+				label: 'test point',
+				unknownProp: 'Should not be included in the toJSON object'
+			};
 
 			p.set(pointTestObject);
 
@@ -285,11 +314,13 @@ describe("Test point model", function () {
 
 	describe('should properly get and set label of the point', function () {
 		it('should test use the getter and setter for label of the object', function () {
-			var p = new Mapper.point(),
-				testLabel = 'Random text here',
-				controlDataObject = {
-					'label': testLabel
-				};
+			var p = new Mapper.point({
+				map: mockedMap
+			}),
+			testLabel = 'Random text here',
+			controlDataObject = {
+				'label': testLabel
+			};
 
 			// getter and setter are inherited properly
 			expect(p.getLabel).to.not.equal(undefined);

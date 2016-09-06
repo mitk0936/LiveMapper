@@ -21,8 +21,6 @@ Mapper.addItemAction = Mapper.action.extend({
 		});
 
 		Mapper.actions.get('deletedItems').remove(this.args.target);
-		// select object, when added back
-		Mapper.mapController.selectCurrent(this.args.target);
 	}
 
 });

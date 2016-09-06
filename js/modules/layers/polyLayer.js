@@ -2,12 +2,13 @@
 this.Mapper = this.Mapper || {};
 
 Mapper.polyLayer = Mapper.baseCollection.extend({
-	initialize: function() {
+	initialize: function(models, args) {
+		this.map = args.map;
 		var self = this;
-
+		
 		this.on("add", function selectAsCurrentItem (item) {
 			item.set("_parentCollection", self);
-			Mapper.mapController.selectCurrent(item);
+			self.map.selectItem(item);
 		});
 	},
 	toJSON: function () {

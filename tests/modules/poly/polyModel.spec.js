@@ -10,7 +10,7 @@ describe("Test poly model", function () {
 	it('should properly initialize the points collection from json object', function () {
 		var pointsCollection = stubCreatePointsCollection(5),
 			initialPointsCollectionJSON = pointsCollection.toJSON(),
-			poly = new Mapper.poly(),
+			poly = stubCreatePoly(),
 			callbacks = {
 				collectionOnAdd: function () {}
 			};
@@ -28,7 +28,9 @@ describe("Test poly model", function () {
 
 		poly.initiallyCreatePointsCollection();
 
+		
 		expect(poly.toJSON().pointsCollectionJSON).to.deep.equal(initialPointsCollectionJSON);
+
 		expect(callbacks.collectionOnAdd).to.be.called.once;
 		expect(poly.setStartEndPoints).to.be.called.once;
 
@@ -48,13 +50,10 @@ describe("Test poly model", function () {
 			/*	Initially: create points collection
 				create poly1
 				create another poly with same points collection - poly2 */
-			initialPointsCollection = stubCreatePointsCollection(initialPointsCount),
-			poly1 = new Mapper.poly({
-				pointsCollectionJSON: initialPointsCollection.toJSON()
-			}),
-			poly2 = new Mapper.poly({
-				pointsCollectionJSON: initialPointsCollection.toJSON()
-			});
+			initialPointsCollection = stubCreatePointsCollection(initialPointsCount);
+
+			poly1 = stubCreatePoly(initialPointsCollection.toJSON());
+			poly2 = stubCreatePoly(initialPointsCollection.toJSON());
 		});
 
 		it('should properly refresh points collection - case with point dragged and a few points added', function () {
@@ -104,7 +103,7 @@ describe("Test poly model", function () {
 			updatedCollectionJSON = poly2.toJSON().pointsCollectionJSON;
 		});
 
-		it('should properly refresh points collection - case with 2 helper points dragged (same amount of points)', function () {
+		it('should properly refresh points collection - case with 2 helper points dragged (same amount of points expected)', function () {
 			/*	Case 3:
 				remove 2 points from poly2 */
 			poly2.get('pointsCollection').at(4).destroy();
@@ -143,9 +142,7 @@ describe("Test poly model", function () {
 		beforeEach(function () {
 			// initally create a poly from generated collection
 			initialPointsCollection = stubCreatePointsCollection(initialPointsCount),
-			poly = new Mapper.poly({
-				pointsCollectionJSON: initialPointsCollection.toJSON()
-			});
+			poly = stubCreatePoly(initialPointsCollection.toJSON());
 		});
 
 		it('case1: should add a point without passed index, as last point in the collection', function () {
@@ -201,7 +198,7 @@ describe("Test poly model", function () {
 				});
 			});
 
-			poly = new Mapper.poly();
+			poly = stubCreatePoly();
 
 			sinon.spy(poly, 'setStartEndPoints');
 
@@ -233,9 +230,7 @@ describe("Test poly model", function () {
 		beforeEach(function () {
 			initialPointsCount = 6;
 			initialPointsCollection = stubCreatePointsCollection(initialPointsCount);
-			poly = new Mapper.poly({
-				pointsCollectionJSON: initialPointsCollection.toJSON()
-			});
+			poly = stubCreatePoly(initialPointsCollection.toJSON());
 
 			sinon.spy(poly, 'insertHelperPoints');
 			sinon.spy(poly, 'createHelperPoint');
@@ -338,9 +333,7 @@ describe("Test poly model", function () {
 		it('should not add points if poly contains only 1 point', function () {
 			var initialPointsCount = 1,
 				initialPointsCollection = stubCreatePointsCollection(initialPointsCount),
-				poly = new Mapper.poly({
-					pointsCollectionJSON: initialPointsCollection.toJSON()
-				});
+				poly = stubCreatePoly(initialPointsCollection.toJSON());
 
 			sinon.spy(poly, 'insertHelperPoints');
 			sinon.spy(poly, 'createHelperPoint');
@@ -360,9 +353,7 @@ describe("Test poly model", function () {
 		it('should set properly the fillColor and get it after that', function () {
 			var initialPointsCount = 3,
 				initialPointsCollection = stubCreatePointsCollection(initialPointsCount),
-				poly = new Mapper.poly({
-					pointsCollectionJSON: initialPointsCollection.toJSON()
-				});
+				poly = stubCreatePoly(initialPointsCollection.toJSON());
 
 			var initialFillColor = poly.getFillColor();
 
@@ -396,9 +387,7 @@ describe("Test poly model", function () {
 		it('should set properly the label and get it after that', function () {
 			var initialPointsCount = 3,
 				initialPointsCollection = stubCreatePointsCollection(initialPointsCount),
-				poly = new Mapper.poly({
-					pointsCollectionJSON: initialPointsCollection.toJSON()
-				});
+				poly = stubCreatePoly(initialPointsCollection.toJSON());
 
 			var initialFillColor = poly.getLabel();
 
@@ -430,7 +419,7 @@ describe("Test poly model", function () {
 
 	describe('Testing poly.toJSON method', function () {
 		it('should store the right values in the toJSON object', function () {
-			var poly = new Mapper.poly(),
+			var poly = stubCreatePoly(),
 				polyTestObject = {
 					type: Utils.CONFIG.polyType.polyline,
 					label: 'test polyline',
@@ -439,7 +428,9 @@ describe("Test poly model", function () {
 				},
 				newPolyName = 'Gosho';
 
-			poly.addPoint(new Mapper.point());
+			poly.addPoint(new Mapper.point({
+				map: mockedMap
+			}));
 			
 			poly.setLabel({
 				'label': newPolyName

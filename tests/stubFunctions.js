@@ -13,7 +13,9 @@ var stubSimulateDragging = function (point) {
 var stubCreatePointsCollection = function (pointsCount) {
 	var pointsCollectionJSON = [],
 		point,
-		pointsCollection = new Mapper.pointsCollection();
+		pointsCollection = new Mapper.pointsCollection(null, {
+			map: mockedMap
+		});
 
 	for ( var i = 0; i < pointsCount; i++ ) {
 		point = stubCreatePoint();
@@ -26,9 +28,19 @@ var stubCreatePointsCollection = function (pointsCount) {
 
 var stubCreatePoint = function () {
 	var p = new Mapper.point({
-				lat: 42.5555555 + ( 3 - Math.random() * 3 ),
-				lng: 23.34343434 + ( 3 - Math.random() * 3 ),
-				single: false
-			});
+		map: mockedMap,
+		lat: 42.5555555 + ( 3 - Math.random() * 3 ),
+		lng: 23.34343434 + ( 3 - Math.random() * 3 ),
+		single: false
+	});
 	return p;
 };
+
+var stubCreatePoly = function (initialJSONCollection) {
+	var poly = new Mapper.poly({
+		map: mockedMap,
+		pointsCollectionJSON: initialJSONCollection || []
+	});
+
+	return poly;
+}

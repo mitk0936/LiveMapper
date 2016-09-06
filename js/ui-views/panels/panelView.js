@@ -27,7 +27,7 @@ Mapper.panelView = Backbone.View.extend({
         	var compiledTemplate = _.template(template),
 				html = compiledTemplate(self.model.defaults);
 
-            Mapper.uiController.getPageContainer().append($(html));
+            $("#page-container").append($(html));
             self.domEl = $("#" + self.model.get('id')).panel({
             	close: function( event, ui ) {
             		self.model.set('state', self.model.get('states')['0']);
@@ -48,7 +48,7 @@ Mapper.panelView = Backbone.View.extend({
 				self.domEl.panel("open");
 			});
 		} else {
-			Mapper.uiController.getPageContainer().append(self.domEl);
+			$("#page-container").append(self.domEl);
 			self.renderPanelContent();
 			self.domEl.panel("open");
 		}

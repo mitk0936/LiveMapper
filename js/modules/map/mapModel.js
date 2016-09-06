@@ -3,63 +3,63 @@ this.Mapper = this.Mapper || {};
 
 Mapper.Map = Backbone.Model.extend({
 	defaults:{
+		currentState: "point",
 		centerLat : 42.644716,
 		centerLng : 23.233456,
 		currentSelection: null,
 	},
 	initialize: function() {
-		var self = this;
-
-		new Mapper.mapView({
-			model: self
-		});
-
-		this.set("pointsLayer", new Mapper.pointsLayer());
-		this.set("polylinesLayer", new Mapper.polyLayer());
-		this.set("polygonsLayer", new Mapper.polyLayer());
+		this.set("mapView", new Mapper.mapView({ model: this }));
+		
+		this.set("pointsLayer", new Mapper.pointsLayer(null, { map: this }));
+		this.set("polylinesLayer", new Mapper.polyLayer(null, { map: this }));
+		this.set("polygonsLayer", new Mapper.polyLayer(null, { map: this }));
 
 		this.on('mapCreated', function () {
 			// experimental
-			Mapper.mapController.initLayers();
+			// Mapper.mapController.initLayers();
 		});
 	},
-	addPoint: function(p) {
-		if (this.get("currentSelection") && this.get("currentSelection").addPoint) {
-			this.get("currentSelection").addPoint(p);
+	addPoint: function(latLng) {
+		var point = new Mapper.point({
+			lat: latLng.lat(),
+			lng: latLng.lng(),
+			map: this
+		});
+
+		var currentSelection = this.get("currentSelection");
+
+		if ( currentSelection && currentSelection.addPoint ) {
+			currentSelection.addPoint(point);
 		} else {
-			this.createSelection(p);
+			this.createSelection(point);
 		}
 	},
-	onMapClicked: function (latLng) {
-        this.addPoint(new Mapper.point({
-        	lat: latLng.lat(),
-        	lng: latLng.lng()
-        }));
-
-        this.set({
-        	centerLat: latLng.lat(),
-        	centerLng: latLng.lng()
-        });
-	},
-	createSelection: function(newPoint) {
-		if ( Mapper.mapController.currentState === "point" ) {
+	createSelection: function (newPoint) {
+		if ( this.get("currentState") === "point" ) {
 			this.get("pointsLayer").add(newPoint);
 
 			Mapper.actions.addAction(new Mapper.addItemAction({
 				'target': newPoint,
 				'parentCollection': this.get("pointsLayer")
 			}));
+
+			this.selectItem(newPoint);
 		} else {
 			var newPoly,
 				currentLayer;
 
-			switch(Mapper.mapController.currentState) {
+			switch(this.get("currentState")) {
 				case "polyline":
-					newPoly = new Mapper.poly();
+					newPoly = new Mapper.poly({
+						map: this
+					});
 					currentLayer = this.get("polylinesLayer");
 					break;
 				case "polygon":
-					newPoly = new Mapper.polygon();
+					newPoly = new Mapper.polygon({
+						map: this
+					});
 					currentLayer = this.get("polygonsLayer");
 					break;
 				default:
@@ -73,35 +73,34 @@ Mapper.Map = Backbone.Model.extend({
 				'target': newPoly,
 				'parentCollection': currentLayer
 			}));
+
+			this.selectItem(newPoly);
 		}
 	},
-	selectCurrent: function(current) {
-		var map = this;
-		this.deselectCurrent();
-		this.set("currentSelection", current);
-		current.set("isSelected", true);
-		current.on("destroy deleted restored", function() {
-			map.clearSelection();
-		});
+	selectItem: function (item) {
+		if ( this.get('currentSelection') !== item ) {
+			var map = this;
+			this.deselectCurrentItem();
+			this.set("currentSelection", item);
+			item.set("isSelected", true);
+			item.on("destroy deleted restored", function() {
+				map.deselectCurrentItem();
+			});
+		}
 	},
-	deselectCurrent: function() {
+	deselectCurrentItem: function() {
 		if (this.get("currentSelection")) {
 			this.get("currentSelection").set("isSelected", false);
+			this.set("currentSelection", null);
 		}
 	},
-	deleteItem: function(item) {
+	deleteItem: function (item) {
 		if ( confirm("Are you sure you want to delete this " + item.get("type")) ) {
-    		item.get("isSelected") && this.deselectCurrent();
+			item.get("isSelected") && this.deselectCurrentItem();
 			item.delete();
 		}
 	},
-	clearSelection: function() {
-		this.deselectCurrent();
-		this.set("currentSelection", null);
-	},
-	destroy: function () {
-		this.trigger('destroy');
-	},
+	destroy: function () {},
 	toJSON: function() {
 		var properties = _.clone(this.attributes);
 		var self = this;

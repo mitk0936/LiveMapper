@@ -31,6 +31,8 @@ Mapper.point = Mapper.baseMapObject.extend({
 	    _parentCollection: null,
 	},
 	initialize: function() {
+		Mapper.point.__super__.initialize.apply(this);
+		
 		var self = this;
 
 		this.refreshPointType();
@@ -82,7 +84,7 @@ Mapper.point = Mapper.baseMapObject.extend({
 	},
 	select: function () {
 		if ( this.get("single") ) {
-    		Mapper.mapController.selectCurrent(this);
+    		this.get("map").selectItem(this);
 			return;
 		}
 

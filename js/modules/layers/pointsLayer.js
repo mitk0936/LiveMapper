@@ -2,8 +2,8 @@
 this.Mapper = this.Mapper || {};
 
 Mapper.pointsLayer = Mapper.pointsCollection.extend({
-	initialize: function(){
-		Mapper.pointsLayer.__super__.initialize.apply(this);
+	initialize: function () {
+		Mapper.pointsLayer.__super__.initialize.apply(this, arguments);
 	},
 	initHandlers: function () {
 		var self = this;
@@ -11,7 +11,7 @@ Mapper.pointsLayer = Mapper.pointsCollection.extend({
 		this.on("add", function (item) {
 			item.set("single", true);
 			item.set("_parentCollection", self);
-			Mapper.mapController.selectCurrent(item);
+			self.map.selectItem(item);
 		});
 
 		this.on("remove", function () {

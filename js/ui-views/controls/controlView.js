@@ -33,9 +33,8 @@ Mapper.controlView = Backbone.View.extend({
 		if( !this.template ) {
 			var self = this;
 
-			Mapper.uiController.loadControlWrapper(function onWrapperLoaded(wrapperTemplate) {
-
-				var compileTemplate = _.template(wrapperTemplate);
+			$.get('templates/controls/control-wrapper.html', function onTemplateLoaded (template) {
+	        	var compileTemplate = _.template(template);
 
 				self.wrapper = compileTemplate(self.options);
 
@@ -45,7 +44,8 @@ Mapper.controlView = Backbone.View.extend({
 
 		        	onLoadedTemplate();
 		        }, 'html');
-			});
+	        }, 'html');
+	        
 		} else {
 			// template already loaded
 			onLoadedTemplate();
