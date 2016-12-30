@@ -1,50 +1,50 @@
-'use strict';
+'use strict'
 this.Mapper = this.Mapper || {};
 
 Mapper.actionsView = Backbone.View.extend({
 	initialize: function(){
 		var self = this;
 
-		this.config = {
+		this.options = {
 			'undo': 'undo',
 			'redo': 'redo',
 			'disabled' : 'disabled'
 		};
 
 		$.get('templates/actions-tabs.html', function onTemplateLoaded(template) {
-            var compileTemplate = _.template(template);
-			var html = $(compileTemplate(self.config));
+			var compileTemplate = _.template(template);
+			var html = $(compileTemplate(self.options));
 
-            $("#main-container").append(html); 
+			$("#main-container").append(html);
 
-           	self.el = $("#actions");
+			self.el = $("#actions");
 			self.initHandlers();
-        }, 'html');	
+		}, 'html');
 	},
 	initHandlers: function(){
 		var self = this;
 
 		this.el.on("click", "li:not(.disabled) a", function(e){
-    		var action = $(this).attr("data-val");
+			var action = $(this).attr("data-val");
 
-    		switch(action){
-    			case self.config["undo"]:
-    				self.model.undo();
-    				break;
-				case self.config["redo"]:
+			switch(action){
+				case self.options["undo"]:
+					self.model.undo();
+					break;
+				case self.options["redo"]:
 					self.model.redo();
 					break;
-    		}
+			}
 
-    		e.preventDefault();
-    	});
+			e.preventDefault();
+		});
 
-    	this.model.get('stackDone').on("add remove reset", function() {
-    		self.updateButton(self.config['undo'], self.model.get('stackDone'));
+		this.model.get('stackDone').on("add remove reset", function() {
+			self.updateButton(self.options['undo'], self.model.get('stackDone'));
 		});
 
 		this.model.get('stackUndone').on("add remove reset", function() {
-			self.updateButton(self.config['redo'], self.model.get('stackUndone'));
+			self.updateButton(self.options['redo'], self.model.get('stackUndone'));
 		});
 	},
 	updateButton: function(buttonType, stack) {

@@ -1,3 +1,4 @@
+'use strict'
 this.Mapper = this.Mapper || {};
 
 Mapper.panelView = Backbone.View.extend({
@@ -7,9 +8,9 @@ Mapper.panelView = Backbone.View.extend({
 	initHandlers: function () {
 		var self = this;
 
-		this.model.on('change:state', function(ev) {
+		this.model.on('change:state', function (ev) {
 			switch(ev.changed.state) {
-				case self.model.get('states')['1']: 
+				case self.model.get('states')['1']:
 					self.open();
 					break;
 				case self.model.get('states')['0']:
@@ -42,8 +43,8 @@ Mapper.panelView = Backbone.View.extend({
 	open: function() {
 		var self = this;
 
-		if ( !self.domEl ) {
-			this.render(function () {
+		if (!self.domEl) {
+			this.render( function () {
 				self.renderPanelContent();
 				self.domEl.panel("open");
 			});
@@ -53,8 +54,8 @@ Mapper.panelView = Backbone.View.extend({
 			self.domEl.panel("open");
 		}
 	},
-	renderPanelContent: function () {},
-	removePanelContent: function () {},
+	renderPanelContent: function () { },
+	removePanelContent: function () { },
 	close: function() {
 		this.domEl && this.domEl.panel('close');
 	}

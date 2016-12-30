@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 this.Mapper = this.Mapper || {};
 
 Mapper.editDeleteView = Backbone.View.extend({
@@ -6,7 +6,7 @@ Mapper.editDeleteView = Backbone.View.extend({
 		var self = this;
 
 		this.stylePanel = options.stylePanel;
-		
+
 		$.get('templates/edit-tabs.html', function onTemplateLoaded (template) {
 			var html = $(template);
 
@@ -20,7 +20,7 @@ Mapper.editDeleteView = Backbone.View.extend({
 
 			self.initHandlers();
 			self.updateVisibility();
-		}, 'html');	
+		}, 'html');
 	},
 	initHandlers: function() {
 		var self = this;
@@ -39,7 +39,7 @@ Mapper.editDeleteView = Backbone.View.extend({
 
 			var self = this;
 			this.buttons.off("click").on("click", function(e) {
-				
+
 				var action = $(e.target).attr('data-action');
 
 				switch (action) {

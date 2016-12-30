@@ -1,3 +1,4 @@
+'use strict'
 this.Mapper = this.Mapper || {};
 
 Mapper.stylePanelView = Mapper.panelView.extend({
@@ -8,7 +9,7 @@ Mapper.stylePanelView = Mapper.panelView.extend({
 	renderPanelContent: function () {
 		var targetItem = this.model.get('targetItem');
 		var stylePanelConfiguration = targetItem.get('stylePanelConfiguration');
-		
+
 		this.controlsContainer = this.domEl.find('.container');
 
 		for (var key in stylePanelConfiguration) {

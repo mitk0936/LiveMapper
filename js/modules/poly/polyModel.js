@@ -26,7 +26,7 @@ Mapper.poly = Mapper.baseMapObject.extend({
 	},
 	initialize: function() {
 		Mapper.poly.__super__.initialize.apply(this);
-		
+
 		this.set("pointsCollection", new Mapper.pointsCollection (null, {
 			map: this.get('map')
 		}));
@@ -53,7 +53,7 @@ Mapper.poly = Mapper.baseMapObject.extend({
 		this.get("pointsCollection").on("pointDragStart", function(ev) {
 			self.pointDragStart();
 		});
-		
+
 		this.get("pointsCollection").on("pointDragStop", function(ev) {
 			self.pointDragStop(ev);
 		});
@@ -64,15 +64,15 @@ Mapper.poly = Mapper.baseMapObject.extend({
 		});
 	},
 	initiallyCreatePointsCollection: function () {
-
 		var pointsCollectionJSON = this.get('pointsCollectionJSON'),
-			pointsArr = [];
+			pointsArr = [],
+			self = this;
 
-		for (var i = 0; i < pointsCollectionJSON.length; i++ ) {
-			pointsArr.push(new Mapper.point(Object.assign({}, pointsCollectionJSON[i], {
-				map: this.get("map")
+		pointsCollectionJSON.map(function (pointJSON) {
+			pointsArr.push(new Mapper.point(Object.assign({}, pointJSON, {
+				map: self.get("map")
 			})));
-		}
+		})
 
 		this.get("pointsCollection").add(pointsArr);
 		this.setStartEndPoints();
@@ -81,24 +81,25 @@ Mapper.poly = Mapper.baseMapObject.extend({
 		// called on refresh after some actions executed
 		var models = this.get('pointsCollection').models,
 			pointsCollectionJSON = this.get('pointsCollectionJSON'),
-			modelsIndexesToDestroy = [];
+			modelsIndexesToDestroy = [],
+			self = this;
 
 		if ( pointsCollectionJSON.length < models.length ) {
 			// destroy last points if points array decreased
 			var lastNModels = this.get('pointsCollection').last(models.length - pointsCollectionJSON.length);
 
-			for ( var i = 0; i < lastNModels.length; i++ ) {
-				lastNModels[i].destroy();
-			}
+			lastNModels.map(function (model) {
+				model.destroy()
+			})
 		}
 
 		// refresh all points
-		for (var i = 0; i < models.length; i++) {
-			if ( JSON.stringify(pointsCollectionJSON[i]) != JSON.stringify(models[i].toJSON()) ) {
-				this.get('pointsCollection').models[i].set(pointsCollectionJSON[i]);
-				this.get('pointsCollection').models[i].trigger('refresh');
+		models.map(function (model, index) {
+			if ( JSON.stringify(pointsCollectionJSON[index]) != JSON.stringify(models[index].toJSON()) ) {
+				self.get('pointsCollection').models[index].set(pointsCollectionJSON[index]);
+				self.get('pointsCollection').models[index].trigger('refresh');
 			}
-		}
+		})
 
 		// add some points to the array, if the new collection is bigger
 		var newPointsToAdd = [];
@@ -127,11 +128,11 @@ Mapper.poly = Mapper.baseMapObject.extend({
 		if ( !point.get('isHelper') ) {
 			jsonStateBefore = this.toJSON();
 		}
-		
+
 		this.get('pointsCollection').add(point, pos);
 
 		if ( !point.get('isHelper') ) {
-			// add action for newly added point, only if it is not a helper point		
+			// add action for newly added point, only if it is not a helper point
 			Mapper.actions.addAction(new Mapper.changeItemStateAction({
 				'target': this,
 				'jsonStateBefore': jsonStateBefore,
@@ -183,7 +184,7 @@ Mapper.poly = Mapper.baseMapObject.extend({
 	},
 	pointDelete: function (ev) {
 		this.set('polyJSONBefore', this.toJSON());
-		
+
 		ev.model.destroy();
 
 		Mapper.actions.addAction(new Mapper.changeItemStateAction({
@@ -193,7 +194,7 @@ Mapper.poly = Mapper.baseMapObject.extend({
 			'refreshPosition': true
 		}));
 	},
-	insertHelperPoints: function(pointModel) {
+	insertHelperPoints: function (pointModel) {
 		var collection = this.get("pointsCollection"),
 			index = collection.indexOf(pointModel);
 
@@ -204,7 +205,7 @@ Mapper.poly = Mapper.baseMapObject.extend({
 			// insert before if the moved point wasnt the first one
 			var prev = collection.at(index - 1);
 			var position = Utils.calcMiddlePoint(prev.get("latLng").lat(), prev.get("latLng").lng(), pointModel.get("latLng").lat(), pointModel.get("latLng").lng());
-			
+
 			this.createHelperPoint(position, index);
 
 			index++;
@@ -235,7 +236,7 @@ Mapper.poly = Mapper.baseMapObject.extend({
 	},
 	setFillColor: function (controlData) {
 		var jsonStateBefore = this.toJSON();
-		
+
 		this.set('fillColor', controlData.colorHex);
 
 		Mapper.actions.addAction(new Mapper.changeItemStateAction({
@@ -257,6 +258,6 @@ Mapper.poly = Mapper.baseMapObject.extend({
 			pointsCollectionJSON: this.get('pointsCollection').toJSON(),
 			fillColor: this.get('fillColor'),
 			label: this.get('label')
-		}	
+		}
 	}
 });

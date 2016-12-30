@@ -1,3 +1,4 @@
+'use strict'
 this.Mapper = this.Mapper || {};
 
 Mapper.labelControl = Mapper.controlView.extend({
@@ -23,7 +24,7 @@ Mapper.labelControl = Mapper.controlView.extend({
 		this.domEl.find('.control-content').on('openned', function onControlOpenned() {
 			inputText.focus();
 		});
-		
+
 		inputText.on('change', function onInputText(e) {
 			self.resultObj.label = $(this).val();
 			self.updateLabel();
